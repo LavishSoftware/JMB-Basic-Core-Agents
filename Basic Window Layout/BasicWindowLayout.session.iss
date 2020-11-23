@@ -1,5 +1,7 @@
 objectdef bwlSession
 {
+    variable bool SwapOnActivate=TRUE
+
     method Initialize()
     {
         LavishScript:RegisterEvent[On Activate]
@@ -11,7 +13,7 @@ objectdef bwlSession
         FocusClick eat
     }
 
-    method OnActivate()
+    method ApplyWindowLayout()
     {
         variable jsonvalueref Slots="JMB.Slots"
 
@@ -61,9 +63,15 @@ objectdef bwlSession
         }
     }
 
+    method OnActivate()
+    {
+        if ${SwapOnActivate}
+            This:ApplyWindowLayout
+    }
+
     method OnWindowStateChanging(string change)
     {
-        
+      ;  echo OnWindowStateChanging ${change~}
     }
 }
 

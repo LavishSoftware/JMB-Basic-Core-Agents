@@ -6,13 +6,11 @@
             "eventHandlers": {
                 "onAgentStartup": {
                     "code": [
-                        "LGUI2:LoadPackageFile[${This.Directory}/BasicLauncher.Uplink.lgui2Package.json]",
                         "run BasicLauncher.Uplink.iss"
                     ]
                 },
                 "onAgentShutdown": {
-                    "code": [
-                        "LGUI2:UnloadPackageFile[${This.Directory}/BasicLauncher.Uplink.lgui2Package.json]",
+                    "code": [                        
                         "endscript BasicLauncher.Uplink"
                     ]
                 }

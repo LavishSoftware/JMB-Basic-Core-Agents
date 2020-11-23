@@ -3,9 +3,25 @@
     "templates":{
         "bl.button":{
             "jsonTemplate":"button"
-        }
+        },
+        "BasicLauncher.gameView":{
+            "jsonTemplate":"listboxitem",
+            "padding":2,
+            "content":{
+              "type":"textblock",
+              "textBinding":{
+                "pullFormat":"${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[display_name]}",
+                "-pullReplaceNull":""
+              }
+            }
+          }      
     },
     "elements": [
+        {
+            "type": "panel",
+            "visibility": "hidden",
+            "name": "BasicLauncher.events"
+        },
         {
             "type": "window",
             "name": "basicLauncher.window",
@@ -36,6 +52,7 @@
                             {
                                 "type":"textblock",
                                 "text":"Game",
+                                "visibility":"collapsed",
                                 "verticalAlignment":"center",
                                 "horizontalContentAlignment":"right",
                                 "width":100,
@@ -45,35 +62,30 @@
                                 }
                             },
                             {
-                                "type":"textbox",
-                                "textBinding":"BasicLauncher.UseGame",
-                                "width":200
-                            }
-                        ]
-                    },
-                    {
-                        "type":"stackpanel",
-                        "orientation":"horizontal",
-                        "margin":[5,5,5,0],
-                        "children":[
-                            {
-                                "type":"textblock",
-                                "text":"Game Profile",
-                                "verticalAlignment":"center",
-                                "horizontalContentAlignment":"right",
-                                "width":100,
-                                "margin":[0,0,5,0],
-                                "font":{
-                                    "bold":true
+                                "type":"listbox",
+                                "name":"bl.useGame",
+                                "width":200,
+                                "maxSize":[200,150],
+                                "itemsBinding": {
+                                    "pullFormat": "${BasicLauncher.Games.AsJSON}",
+                                    "pullHook": {
+                                      "elementName": "BasicLauncher.events",
+                                      "flags": "global",
+                                      "event": "onGamesUpdated"
+                                    }
+                                  },
+                                "selectedItemBinding":"BasicLauncher.UseGame",
+                                "selectedItemBindingProperty":"display_name",
+                                "itemViewGenerators":{
+                                    "default":{
+                                      "type":"method",
+                                      "object":"BasicLauncher",
+                                      "method":"GenerateItemView_Game"
+                                    }
                                 }
-                            },
-                            {
-                                "type":"textbox",
-                                "textBinding":"BasicLauncher.UseGameProfile",
-                                "width":200
-                            }
+                            }                            
                         ]
-                    },                                       
+                    },                       
                     {
                         "type":"stackpanel",
                         "margin":[5,5,5,0],

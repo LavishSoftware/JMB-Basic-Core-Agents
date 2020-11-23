@@ -4,7 +4,10 @@
         {
             "type": "window",
             "name": "basicPerformance.window",
-            "title": "Basic Performance"            
+            "title": "Basic Performance",
+            "width":200,
+            "height":100,
+            "content":"Work in progress"       
         }
     ]
 }

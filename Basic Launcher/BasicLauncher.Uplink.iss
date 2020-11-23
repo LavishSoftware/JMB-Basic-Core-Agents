@@ -2,17 +2,30 @@ objectdef basiclauncher
 {
     method Initialize()
     {
+        LavishScript:RegisterEvent[GamesChanged]
 
+        Event[GamesChanged]:AttachAtom[This:RefreshGames]
+
+        This:RefreshGames
+
+        LGUI2:LoadPackageFile[BasicLauncher.Uplink.lgui2Package.json]
+        UseGame:Set["WoW Classic"]
+    }
+
+    method Shutdown()
+    {
+        LGUI2:UnloadPackageFile[BasicLauncher.Uplink.lgui2Package.json]
     }
 
     variable uint LaunchSlots=3
 
-    variable string UseGame="WoW Classic"
-    variable string UseGameProfile="WoW Classic Default Profile"
-
+    variable string UseGame
+;    variable string UseGameProfile="WoW Classic Default Profile"
+    variable jsonvalue Games="[]"
 
     method InstallCharacters()
     {
+        variable string UseGameProfile="${UseGame~} Default Profile"
         variable jsonvalue jo
         jo:SetValue["$$>
         {
@@ -58,6 +71,40 @@ objectdef basiclauncher
     method CloseAll()
     {
         relay all exit
+    }
+
+    method GenerateItemView_Game()
+	{
+        echo GenerateItemView_Game ${Context(type)} ${Context.Args}
+
+		; build an itemview lgui2element json
+		variable jsonvalue joListBoxItem
+		joListBoxItem:SetValue["${LGUI2.Template["BasicLauncher.gameView"].AsJSON~}"]
+        		
+		Context:SetView["${joListBoxItem.AsJSON~}"]
+	}
+
+    method RefreshGames()
+    {
+        variable jsonvalue jo="${JMB.GameConfiguration.AsJSON~}"
+        jo:Erase["_set_guid"]
+
+        variable jsonvalue jaKeys
+        jaKeys:SetValue["${jo.Keys.AsJSON~}"]
+        jo:SetValue["[]"]
+
+        variable uint i
+        for (i:Set[1] ; ${i}<=${jaKeys.Used} ; i:Inc)
+        {
+            jo:Add["$$>
+            {
+                "display_name":${jaKeys[${i}].AsJSON~}
+            }
+            <$$"]
+        }
+    
+        Games:SetValue["${jo.AsJSON~}"]
+        LGUI2.Element[BasicLauncher.events]:FireEventHandler[onGamesUpdated]
     }
 }
 

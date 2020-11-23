@@ -5,6 +5,9 @@ objectdef bghSession
     variable bool HotkeyInstalled
     variable filepath AgentFolder="${Script.CurrentDirectory}"
 
+    variable string NextWindowKey="Ctrl+Alt+X"
+    variable string PreviousWindowKey="Ctrl+Alt+Z"
+
     method Initialize()
     {
         LavishScript:RegisterEvent[On3DReset]
@@ -28,6 +31,10 @@ objectdef bghSession
         }
 
         GlobalHotkeys:SetValue["${jo.Get["globalHotkeys"].AsJSON~}"]
+        if ${jo.Has[nextWindowHotkey]}
+            NextWindowKey:Set["${jo.Get["nextWindowHotkey"]~}"]
+        if ${jo.Has[previousWindowHotkey]}
+            PreviousWindowKey:Set["${jo.Get["previousWindowHotkey"]~}"]
 
         if !${GlobalHotkeys.Type.Equal[array]}
             GlobalHotkeys:SetValue["[]"]
@@ -62,6 +69,14 @@ objectdef bghSession
         HotkeyInstalled:Set[1]
         
         globalbind "focus" "${GlobalHotkeys.Get[${Slot}]~}" "windowvisibility foreground"
+
+        if ${Slot}==1
+        {
+            if ${NextWindowKey.NotNULLOrEmpty}
+                globalbind "focusnext" "${NextWindowKey~}" "relay all BGHSession:NextWindow"
+            if ${PreviousWindowKey.NotNULLOrEmpty}
+                globalbind "focusprev" "${PreviousWindowKey~}" "relay all BGHSession:PreviousWindow"
+        }
     }
 
     member:uint GetNextSlot()
@@ -75,6 +90,31 @@ objectdef bghSession
             return 1
 
         return ${Slot}
+    }
+
+    member:uint GetPreviousSlot()
+    {
+        variable uint Slot=${JMB.Slot}
+        if !${Slot}
+            return 0
+
+        Slot:Dec
+        if !${Slot}
+            return ${JMB.Slots.Used}
+
+        return ${Slot}
+    }
+
+    method PreviousWindow()
+    {
+        variable uint previousSlot=${This.GetPreviousSlot}
+        if !${previousSlot}
+            return
+
+        if !${Display.Window.IsForeground}
+            return
+
+        uplink focus "jmb${previousSlot}"
     }
 
     method NextWindow()
@@ -95,6 +135,14 @@ objectdef bghSession
             return
         HotkeyInstalled:Set[0]
         globalbind -delete "focus"
+
+        if ${Slot}==1
+        {
+            if ${NextWindowKey.NotNULLOrEmpty}
+                globalbind -delete "focusnext"
+            if ${PreviousWindowKey.NotNULLOrEmpty}
+                globalbind -delete "focusprev"
+        }
     }
 
     method On3DReset()
