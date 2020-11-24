@@ -4,7 +4,8 @@
         {
             "type": "window",
             "name": "basicPerformance.window",
-            "title": "Basic Performance"            
+            "title": "Basic Performance",
+            "visibility":"hidden"
         }
     ]
 }
