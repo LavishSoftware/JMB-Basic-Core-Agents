@@ -64,6 +64,7 @@
                                 "type":"listbox",
                                 "name":"bl.useGame",
                                 "width":200,
+                                "height":50,
                                 "maxSize":[200,150],
                                 "itemsBinding": {
                                     "pullFormat": "${BasicLauncher.Games.AsJSON}",
@@ -137,6 +138,11 @@
                             "type":"stackpanel",
                             "orientation":"vertical",
                             "children":[                                
+                                {
+                                    "type":"checkbox",
+                                    "content":"Replace previously launched Slots",
+                                    "checkedBinding":"BasicLauncher.ReplaceSlots"
+                                },
                                 {
                                     "type":"button",
                                     "jsonTemplate":"bl.button",

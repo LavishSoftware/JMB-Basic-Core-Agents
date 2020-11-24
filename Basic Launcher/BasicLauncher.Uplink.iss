@@ -9,7 +9,6 @@ objectdef basiclauncher
         This:RefreshGames
 
         LGUI2:LoadPackageFile[BasicLauncher.Uplink.lgui2Package.json]
-        UseGame:Set["WoW Classic"]
     }
 
     method Shutdown()
@@ -18,6 +17,7 @@ objectdef basiclauncher
     }
 
     variable uint LaunchSlots=3
+    variable bool ReplaceSlots=TRUE
 
     variable string UseGame
 ;    variable string UseGameProfile="WoW Classic Default Profile"
@@ -46,13 +46,16 @@ objectdef basiclauncher
 
     method Launch()
     {
-        JMB:ClearSlots
+        if ${ReplaceSlots}
+            JMB:ClearSlots
+
         This:InstallCharacters
         
         variable uint Slot
-        for (Slot:Set[1] ; ${Slot}<=${LaunchSlots} ; Slot:Inc)
+        variable uint NumAdded
+        for (NumAdded:Set[1] ; ${NumAdded}<=${LaunchSlots} ; NumAdded:Inc)
         {
-            JMB:AddSlot
+            Slot:Set["${JMB.AddSlot.ID}"]
             JMB.Slot[${Slot}]:SetCharacter[1]
             JMB.Slot[${Slot}]:Launch
         }
