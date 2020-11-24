@@ -11,8 +11,6 @@ objectdef bghUplink
         This:LoadSettings
         LGUI2.Element[bgh.filename]:SetText["${AgentFolder.Replace["/","\\"]~}\\bgh.Settings.json"]
 
-        globalbind focusnext "Ctrl+Alt+X" "relay all BGHSession:NextWindow"
-
         LGUI2:LoadPackageFile[${This.Directory}/BasicGlobalHotkeys.Uplink.lgui2Package.json]
     }
     
