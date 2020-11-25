@@ -2,6 +2,20 @@
 	"$schema": "http://www.lavishsoft.com/schema/agent.json",
 	"name": "Basic Window Layout",
 	"platforms": {
+		"joe multiboxer uplink": {
+			"eventHandlers": {
+				"onAgentStartup": {
+					"code": [
+						"run BasicWindowLayout.Uplink.iss"
+					]
+				},
+				"onAgentShutdown": {
+					"code": [
+						"endscript BasicWindowLayout.Uplink"
+					]
+				}
+			}
+		}	,
 		"joe multiboxer session": {
 			"eventHandlers": {
 				"onAgentStartup": {
