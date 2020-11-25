@@ -26,6 +26,8 @@
             "type": "window",
             "name": "basicLauncher.window",
             "title": "Basic Launcher",
+            "horizontalAlignment":"center",
+            "verticalAlignment":"center",
             "content":{
                 "type":"stackpanel",
                 "orientation":"vertical",
@@ -51,10 +53,9 @@
                         "children":[
                             {
                                 "type":"textblock",
-                                "text":"Select a Game",
+                                "text":"Highlight a Game from the list below",
                                 "verticalAlignment":"center",
                                 "horizontalContentAlignment":"right",
-                                "width":100,
                                 "margin":[0,0,5,0],
                                 "font":{
                                     "bold":true
@@ -63,8 +64,7 @@
                             {
                                 "type":"listbox",
                                 "name":"bl.useGame",
-                                "width":200,
-                                "height":50,
+                                "minSize":[200,50],
                                 "maxSize":[200,150],
                                 "itemsBinding": {
                                     "pullFormat": "${BasicLauncher.Games.AsJSON}",

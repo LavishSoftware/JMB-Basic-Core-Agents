@@ -63,7 +63,7 @@ objectdef basiclauncher
 
     method AllFullScreen()
     {
-        relay all "WindowCharacteristics -pos -viewable ${Display.Monitor.X},${Display.Monitor.Y} -size -viewable ${Display.Monitor.Width}x${Display.Monitor.Height} -frame none"
+        relay all "WindowCharacteristics -pos -viewable ${Display.Monitor.Left},${Display.Monitor.Top} -size -viewable ${Display.Monitor.Width}x${Display.Monitor.Height} -frame none"
     }
 
     method ShowConsoles()
