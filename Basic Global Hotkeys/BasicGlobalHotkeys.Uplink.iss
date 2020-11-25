@@ -9,15 +9,15 @@ objectdef bghUplink
     method Initialize()
     {
         This:LoadSettings
-        LGUI2.Element[bgh.filename]:SetText["${AgentFolder.Replace["/","\\"]~}\\bgh.Settings.json"]
 
-        LGUI2:LoadPackageFile[${This.Directory}/BasicGlobalHotkeys.Uplink.lgui2Package.json]
+        LGUI2:LoadPackageFile[BasicGlobalHotkeys.Uplink.lgui2Package.json]
+        LGUI2.Element[bgh.filename]:SetText["${AgentFolder.Replace["/","\\"]~}\\bgh.Settings.json"]
     }
     
     method Shutdown()
     {
         This:Disable
-        LGUI2:UnloadPackageFile[${This.Directory}/BasicGlobalHotkeys.Uplink.lgui2Package.json]
+        LGUI2:UnloadPackageFile[BasicGlobalHotkeys.Uplink.lgui2Package.json]
     }
 
     method LoadSettings()
