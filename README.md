@@ -14,5 +14,5 @@
 * `Basic Global Hotkeys`: Configurable **window switching hotkeys** -- one for each window, defaulting to `Ctrl+Alt+1` through `Ctrl+Alt+=`. Also includes Next/Previous window hotkeys, `Ctrl+Alt+Z` and `Ctrl+Alt+X by` default.
   * Note: if you use an `Alt Gr` key for typing, the default settings for this Agent may interfere with your typing `@` and other characters; you may want to change it to `Shift+Alt+1`, etc. Or, just not use this agent :)
 * `Basic Performance`: Currently no configuration. Applies 60fps foreground, 30fps background, and "all windows use all cores" CPU strategy.
-* `Basic Highlighter`: Highlights the focused window, and places Slot numbers in the corner of non-focused wnidows
+* `Basic Highlighter`: Highlights the focused window, and places Slot numbers in the corner of non-focused windows
 
