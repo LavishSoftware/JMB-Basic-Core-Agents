@@ -1,6 +1,31 @@
 objectdef bwlSettings
 {
     variable filepath AgentFolder="${Script.CurrentDirectory}"
+    
+    variable jsonvalue hotkeyToggleSwapOnActivate="$$>
+    {
+        "controls":"A",
+        "modifiers":"shift+ctrl+alt"
+    }
+    <$$"
+    variable jsonvalue hotkeyToggleFocusFollowsMouse="$$>
+    {
+        "controls":"M",
+        "modifiers":"shift+ctrl+alt"
+    }
+    <$$"
+    variable jsonvalue hotkeyFullscreen="$$>
+    {
+        "controls":"F",
+        "modifiers":"shift+ctrl+alt"
+    }
+    <$$"
+    variable jsonvalue hotkeyApplyWindowLayout="$$>
+    {
+        "controls":"W",
+        "modifiers":"shift+ctrl+alt"
+    }
+    <$$"
 
     method Initialize()
     {
@@ -30,6 +55,20 @@ objectdef bwlSettings
         if ${jo.Has[avoidTaskbar]}
             AvoidTaskbar:Set["${jo.Get[avoidTaskbar]}"]
 
+        variable jsonvalue joHotkeys
+        joHotkeys:SetValue["${jo.Get[hotkeys].AsJSON~}"]
+
+        if ${joHotkeys.Type.Equal[object]}
+        {
+            if ${joHotkeys.Has[toggleSwapOnActivate]}
+                hotkeyToggleSwapOnActivate:Set["${joHotkeys.Get[toggleSwapOnActivate].AsJSON~}"]
+            if ${joHotkeys.Has[toggleFocusFollowsMouse]}
+                hotkeyToggleFocusFollowsMouse:Set["${joHotkeys.Get[toggleFocusFollowsMouse].AsJSON~}"]
+            if ${joHotkeys.Has[fullscreen]}
+                hotkeyFullscreen:Set["${joHotkeys.Get[fullscreen].AsJSON~}"]
+            if ${joHotkeys.Has[applyWindowLayout]}
+                hotkeyApplyWindowLayout:Set["${joHotkeys.Get[applyWindowLayout].AsJSON~}"]
+        }
     }
 
 
@@ -48,7 +87,13 @@ objectdef bwlSettings
             "swapOnActivate":${SwapOnActivate.AsJSON~},
             "leaveHole":${LeaveHole.AsJSON~},
             "focusFollowsMouse":${FocusFollowsMouse.AsJSON~},
-            "avoidTaskbar":${AvoidTaskbar.AsJSON~}
+            "avoidTaskbar":${AvoidTaskbar.AsJSON~},
+            "hotkeys":{
+                "toggleSwapOnActivate":${hotkeyToggleSwapOnActivate.AsJSON~},
+                "toggleFocusFollowsMouse":${hotkeyToggleFocusFollowsMouse.AsJSON~},
+                "fullscreen":${hotkeyFullscreen.AsJSON~},
+                "applyWindowLayout":${hotkeyApplyWindowLayout.AsJSON~}
+            }
         }
         <$$"]
         return "${jo.AsJSON~}"

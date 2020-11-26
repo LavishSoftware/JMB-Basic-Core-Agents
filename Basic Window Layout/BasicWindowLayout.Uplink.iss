@@ -20,6 +20,11 @@ objectdef bwlUplink
         LGUI2:UnloadPackageFile[BasicWindowLayout.Uplink.lgui2Package.json]
     }
 
+    method ToggleFocusFollowsMouse()
+    {
+        This:SetFocusFollowsMouse[${Settings.FocusFollowsMouse.Not}]
+    }
+
     method SetFocusFollowsMouse(bool newValue)
     {
         if ${newValue}==${Settings.FocusFollowsMouse}
@@ -29,6 +34,11 @@ objectdef bwlUplink
 
         ; push updated setting
         relay all "BWLSession.Settings.FocusFollowsMouse:Set[${newValue}]"
+    }
+
+    method ToggleAvoidTaskbar()
+    {
+        This:SetAvoidTaskbar[${Settings.AvoidTaskbar.Not}]
     }
 
     method SetAvoidTaskbar(bool newValue)
@@ -42,6 +52,11 @@ objectdef bwlUplink
         relay all "BWLSession.Settings.AvoidTaskbar:Set[${newValue}]"
     }
 
+    method ToggleSwapOnActivate()
+    {
+        This:SetSwapOnActivate[${Settings.SwapOnActivate.Not}]
+    }
+
     method SetSwapOnActivate(bool newValue)
     {
         if ${newValue}==${Settings.SwapOnActivate}
@@ -51,6 +66,11 @@ objectdef bwlUplink
 
         ; push updated setting
         relay all "BWLSession.Settings.SwapOnActivate:Set[${newValue}]"
+    }
+
+    method ToggleLeaveHole()
+    {
+        This:SetLeaveHole[${Settings.LeaveHole.Not}]
     }
 
     method SetLeaveHole(bool newValue)
