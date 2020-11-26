@@ -26,6 +26,19 @@ objectdef bwlSettings
         "modifiers":"shift+ctrl+alt"
     }
     <$$"
+    variable jsonvalue hotkeyNextWindow="$$>
+    {
+        "controls":"X",
+        "modifiers":"shift+ctrl+alt"
+    }
+    <$$"
+    variable jsonvalue hotkeyPreviousWindow="$$>
+    {
+        "controls":"Z",
+        "modifiers":"shift+ctrl+alt"
+    }
+    <$$"
+
 
     method Initialize()
     {
@@ -68,6 +81,10 @@ objectdef bwlSettings
                 hotkeyFullscreen:Set["${joHotkeys.Get[fullscreen].AsJSON~}"]
             if ${joHotkeys.Has[applyWindowLayout]}
                 hotkeyApplyWindowLayout:Set["${joHotkeys.Get[applyWindowLayout].AsJSON~}"]
+            if ${joHotkeys.Has[nextWindow]}
+                hotkeyApplyWindowLayout:Set["${joHotkeys.Get[nextWindow].AsJSON~}"]
+            if ${joHotkeys.Has[previousWindow]}
+                hotkeyApplyWindowLayout:Set["${joHotkeys.Get[previousWindow].AsJSON~}"]
         }
     }
 
@@ -92,7 +109,9 @@ objectdef bwlSettings
                 "toggleSwapOnActivate":${hotkeyToggleSwapOnActivate.AsJSON~},
                 "toggleFocusFollowsMouse":${hotkeyToggleFocusFollowsMouse.AsJSON~},
                 "fullscreen":${hotkeyFullscreen.AsJSON~},
-                "applyWindowLayout":${hotkeyApplyWindowLayout.AsJSON~}
+                "applyWindowLayout":${hotkeyApplyWindowLayout.AsJSON~},
+                "nextWindow":${hotkeyNextWindow.AsJSON~},
+                "previousWindow":${hotkeyPreviousWindow.AsJSON~}
             }
         }
         <$$"]

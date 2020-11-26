@@ -139,6 +139,57 @@ objectdef bwlSession
         uplink "BWLUplink:ToggleAvoidTaskbar"
     }
 
+    
+    member:uint GetNextSlot()
+    {
+        variable uint Slot=${JMB.Slot}
+        if !${Slot}
+            return 0
+
+        Slot:Inc
+        if ${Slot}>${JMB.Slots.Used}
+            return 1
+
+        return ${Slot}
+    }
+
+    member:uint GetPreviousSlot()
+    {
+        variable uint Slot=${JMB.Slot}
+        if !${Slot}
+            return 0
+
+        Slot:Dec
+        if !${Slot}
+            return ${JMB.Slots.Used}
+
+        return ${Slot}
+    }
+
+    method PreviousWindow()
+    {
+        variable uint previousSlot=${This.GetPreviousSlot}
+        if !${previousSlot}
+            return
+
+        if !${Display.Window.IsForeground}
+            return
+
+        uplink focus "jmb${previousSlot}"
+    }
+
+    method NextWindow()
+    {
+        variable uint nextSlot=${This.GetNextSlot}
+        if !${nextSlot}
+            return
+
+        if !${Display.Window.IsForeground}
+            return
+
+        uplink focus "jmb${nextSlot}"
+    }
+
     method Fullscreen()
     {
         echo Fullscreen
@@ -226,6 +277,42 @@ objectdef bwlSession
             LGUI2:AddBinding["${joBinding.AsJSON~}"]
         }
 
+        if ${Settings.hotkeyNextWindow.Type.Equal[object]} && ${Settings.hotkeyNextWindow.Has[controls]}
+        {
+            joBinding:SetValue["${Settings.hotkeyNextWindow.AsJSON~}"]
+            joBinding:Set[name,"\"bwl.nextWindow\""]
+            joBinding:Set[eventHandler,"$$>
+             {
+                "type":"task",
+                "taskManager":"bwlSession",
+                "task":{
+                    "type":"ls1.code",
+                    "start":"BWLSession:NextWindow"
+                }
+            }
+            <$$"]
+
+            LGUI2:AddBinding["${joBinding.AsJSON~}"]
+        }
+
+        if ${Settings.hotkeyPreviousWindow.Type.Equal[object]} && ${Settings.hotkeyPreviousWindow.Has[controls]}
+        {
+            joBinding:SetValue["${Settings.hotkeyPreviousWindow.AsJSON~}"]
+            joBinding:Set[name,"\"bwl.previousWindow\""]
+            joBinding:Set[eventHandler,"$$>
+             {
+                "type":"task",
+                "taskManager":"bwlSession",
+                "task":{
+                    "type":"ls1.code",
+                    "start":"BWLSession:PreviousWindow"
+                }
+            }
+            <$$"]
+
+            LGUI2:AddBinding["${joBinding.AsJSON~}"]
+        }
+
     }
 
     method DisableHotkeys()
@@ -234,6 +321,8 @@ objectdef bwlSession
         LGUI2:RemoveBinding["bwl.applyWindowLayout"]
         LGUI2:RemoveBinding["bwl.toggleFocusFollowsMouse"]
         LGUI2:RemoveBinding["bwl.toggleSwapOnActivate"]
+        LGUI2:RemoveBinding["bwl.nextWindow"]
+        LGUI2:RemoveBinding["bwl.previousWindow"]
     }
 
     method ApplyFocusFollowMouse()
