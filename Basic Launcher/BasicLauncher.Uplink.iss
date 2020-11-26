@@ -20,23 +20,22 @@ objectdef basiclauncher
     variable bool ReplaceSlots=TRUE
 
     variable string UseGame
-;    variable string UseGameProfile="WoW Classic Default Profile"
     variable jsonvalue Games="[]"
 
-    method InstallCharacters()
+    method InstallCharacter(uint Slot)
     {
         variable string UseGameProfile="${UseGame~} Default Profile"
         variable jsonvalue jo
         jo:SetValue["$$>
         {
-            "id":1,
+            "id":${Slot},
             "display_name":"Generic Character",
             "game":${UseGame.AsJSON~},
             "gameProfile":${UseGameProfile.AsJSON~}
             "virtualFiles":[
                 {
                     "pattern":"*/Config.WTF",
-                    "replacement":"{1}/Config.Generic.JMB.WTF"
+                    "replacement":"{1}/Config.Generic.JMB${Slot}.WTF"
                 }
             ]
         }
@@ -56,6 +55,7 @@ objectdef basiclauncher
         for (NumAdded:Set[1] ; ${NumAdded}<=${LaunchSlots} ; NumAdded:Inc)
         {
             Slot:Set["${JMB.AddSlot.ID}"]
+            This:InstallCharacter[${Slot}]
             JMB.Slot[${Slot}]:SetCharacter[1]
             JMB.Slot[${Slot}]:Launch
         }
