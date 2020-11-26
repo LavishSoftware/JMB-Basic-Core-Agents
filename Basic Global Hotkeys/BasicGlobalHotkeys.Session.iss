@@ -59,6 +59,7 @@ objectdef bghSession
 
     method InstallHotkey()
     {
+        variable string useTarget="foreground"
         variable uint Slot=${JMB.Slot}
         if !${Slot} || ${Slot}>${GlobalHotkeys.Used}
             return
@@ -70,12 +71,18 @@ objectdef bghSession
         
         globalbind "focus" "${GlobalHotkeys.Get[${Slot}]~}" "windowvisibility foreground"
 
+        if ${JMB.Build}<6741
+        {
+            ; old build does not support relay foreground
+            useTarget:Set["all"]            
+        }
+
         if ${Slot}==1
         {
             if ${NextWindowKey.NotNULLOrEmpty}
-                globalbind "focusnext" "${NextWindowKey~}" "relay all BGHSession:NextWindow"
+                globalbind "focusnext" "${NextWindowKey~}" "relay ${useTarget~} BGHSession:NextWindow"
             if ${PreviousWindowKey.NotNULLOrEmpty}
-                globalbind "focusprev" "${PreviousWindowKey~}" "relay all BGHSession:PreviousWindow"
+                globalbind "focusprev" "${PreviousWindowKey~}" "relay ${useTarget~} BGHSession:PreviousWindow"
         }
     }
 
