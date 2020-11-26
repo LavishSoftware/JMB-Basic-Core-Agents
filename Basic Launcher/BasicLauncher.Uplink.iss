@@ -56,7 +56,7 @@ objectdef basiclauncher
         {
             Slot:Set["${JMB.AddSlot.ID}"]
             This:InstallCharacter[${Slot}]
-            JMB.Slot[${Slot}]:SetCharacter[1]
+            JMB.Slot[${Slot}]:SetCharacter[${Slot}]
             JMB.Slot[${Slot}]:Launch
         }
     }
