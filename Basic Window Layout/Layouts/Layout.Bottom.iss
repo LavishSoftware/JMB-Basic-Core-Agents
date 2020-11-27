@@ -3,13 +3,17 @@
 objectdef layoutBottom inherits layoutType
 {
     variable string name
+    variable uint monitorWidth=${Display.Monitor.Width}
+    variable uint monitorHeight=${Display.Monitor.Height}
+    variable int monitorX=${Display.Monitor.Left}
+    variable int monitorY=${Display.Monitor.Top}
     variable uint mainHeight
     variable uint mainWidth
     variable uint smallHeight
     variable uint smallWidth
     variable uint numSmallRegions
-    
-    method getWindowCharacteristics(uint slotID, uint mainSlotID, bool avoidTaskbar, bool leaveHole) 
+
+    member:string getWindowCharacteristics(uint slotID, uint mainSlotID, bool avoidTaskbar, bool leaveHole) 
     {
         variable uint monitorWidth=${Display.Monitor.Width}
         variable uint monitorHeight=${Display.Monitor.Height}

@@ -1,9 +1,11 @@
 #include "BasicWindowLayout.Common.iss"
+#include "BasicWindowLayout.LayoutController.iss"
 
 objectdef bwlSession
 {
     variable taskmanager TaskManager=${LMAC.NewTaskManager["bwlSession"]}
     variable bwlSettings Settings
+    variable bwlLayoutController LayoutController
 
     variable bool Applied
 
