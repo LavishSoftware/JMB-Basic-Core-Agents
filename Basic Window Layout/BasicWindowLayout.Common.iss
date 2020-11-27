@@ -74,17 +74,17 @@ objectdef bwlSettings
         if ${joHotkeys.Type.Equal[object]}
         {
             if ${joHotkeys.Has[toggleSwapOnActivate]}
-                hotkeyToggleSwapOnActivate:Set["${joHotkeys.Get[toggleSwapOnActivate].AsJSON~}"]
+                hotkeyToggleSwapOnActivate:SetValue["${joHotkeys.Get[toggleSwapOnActivate].AsJSON~}"]
             if ${joHotkeys.Has[toggleFocusFollowsMouse]}
-                hotkeyToggleFocusFollowsMouse:Set["${joHotkeys.Get[toggleFocusFollowsMouse].AsJSON~}"]
+                hotkeyToggleFocusFollowsMouse:SetValue["${joHotkeys.Get[toggleFocusFollowsMouse].AsJSON~}"]
             if ${joHotkeys.Has[fullscreen]}
-                hotkeyFullscreen:Set["${joHotkeys.Get[fullscreen].AsJSON~}"]
+                hotkeyFullscreen:SetValue["${joHotkeys.Get[fullscreen].AsJSON~}"]
             if ${joHotkeys.Has[applyWindowLayout]}
-                hotkeyApplyWindowLayout:Set["${joHotkeys.Get[applyWindowLayout].AsJSON~}"]
+                hotkeyApplyWindowLayout:SetValue["${joHotkeys.Get[applyWindowLayout].AsJSON~}"]
             if ${joHotkeys.Has[nextWindow]}
-                hotkeyApplyWindowLayout:Set["${joHotkeys.Get[nextWindow].AsJSON~}"]
+                hotkeyNextWindow:SetValue["${joHotkeys.Get[nextWindow].AsJSON~}"]
             if ${joHotkeys.Has[previousWindow]}
-                hotkeyApplyWindowLayout:Set["${joHotkeys.Get[previousWindow].AsJSON~}"]
+                hotkeyPreviousWindow:SetValue["${joHotkeys.Get[previousWindow].AsJSON~}"]
         }
     }
 
