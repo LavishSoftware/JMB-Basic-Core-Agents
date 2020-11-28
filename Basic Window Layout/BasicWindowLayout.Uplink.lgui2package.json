@@ -39,18 +39,27 @@
                             },
                             {
                                 "type":"checkbox",
-                                "content":"Avoid Windows Taskbar area",
-                                "checkedBinding":{
-                                    "pullFormat":"${BWLUplink.Settings.AvoidTaskbar}",
-                                    "pushFormat":["BWLUplink:SetAvoidTaskbar[\"","\"]"]
-                                }
-                            },
-                            {
-                                "type":"checkbox",
+                                "name":"bwl.swapOnActivate",
                                 "content":"Swap window positions when a new window is focused",
                                 "checkedBinding":{
                                     "pullFormat":"${BWLUplink.Settings.SwapOnActivate}",
                                     "pushFormat":["BWLUplink:SetSwapOnActivate[\"","\"]"]
+                                }
+                            },
+                            {
+                                "type":"checkbox",
+                                "content":"Swap window positions when focused via JMB Hotkey",
+                                "checkedBinding":{
+                                    "pullFormat":"${BWLUplink.Settings.SwapOnHotkeyFocused}",
+                                    "pushFormat":["BWLUplink:SetSwapOnHotkeyFocused[\"","\"]"]
+                                }
+                            },
+                            {
+                                "type":"checkbox",
+                                "content":"Avoid Windows Taskbar area",
+                                "checkedBinding":{
+                                    "pullFormat":"${BWLUplink.Settings.AvoidTaskbar}",
+                                    "pushFormat":["BWLUplink:SetAvoidTaskbar[\"","\"]"]
                                 }
                             },
                             {

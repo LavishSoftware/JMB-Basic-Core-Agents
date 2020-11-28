@@ -13,11 +13,13 @@ objectdef bwlSession
         LavishScript:RegisterEvent[OnWindowStateChanging]
 		LavishScript:RegisterEvent[OnMouseEnter]
 		LavishScript:RegisterEvent[OnMouseExit]
+        LavishScript:RegisterEvent[OnHotkeyFocused]
 
         Event[On Activate]:AttachAtom[This:OnActivate]
         Event[OnWindowStateChanging]:AttachAtom[This:OnWindowStateChanging]
 		Event[OnMouseEnter]:AttachAtom[This:OnMouseEnter]
 		Event[OnMouseExit]:AttachAtom[This:OnMouseExit]
+        Event[OnHotkeyFocused]:AttachAtom[This:OnHotkeyFocused]
 
         This:EnableHotkeys
         FocusClick eat
@@ -114,6 +116,20 @@ objectdef bwlSession
         }
     }
 
+    method OnHotkeyFocused()
+    {
+        ; if it would have been handled by SwapOnActivate, don't do it again here
+        if (!${Settings.SwapOnActivate} || ${Settings.FocusFollowsMouse}) && ${Settings.SwapOnHotkeyFocused}
+        {
+            This:ApplyWindowLayout
+        }
+        else
+        {
+            if !${Applied}
+                This:ApplyWindowLayout[FALSE]
+        }
+    }
+
     method OnWindowStateChanging(string change)
     {
       ;  echo OnWindowStateChanging ${change~}
@@ -176,6 +192,7 @@ objectdef bwlSession
             return
 
         uplink focus "jmb${previousSlot}"
+        relay "jmb${previousSlot}" "Event[OnHotkeyFocused]:Execute"
     }
 
     method NextWindow()
@@ -188,6 +205,7 @@ objectdef bwlSession
             return
 
         uplink focus "jmb${nextSlot}"
+        relay "jmb${nextSlot}" "Event[OnHotkeyFocused]:Execute"
     }
 
     method Fullscreen()

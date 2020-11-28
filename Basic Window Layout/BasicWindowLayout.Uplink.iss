@@ -4,12 +4,6 @@ objectdef bwlUplink
 {
     variable bwlSettings Settings
 
-    variable bool SwapOnActivate=TRUE
-    variable bool LeaveHole=TRUE
-    variable bool FocusFollowsMouse=FALSE    
-    variable bool AvoidTaskbar=FALSE
-
-
     method Initialize()
     {
         LGUI2:LoadPackageFile[BasicWindowLayout.Uplink.lgui2Package.json]
@@ -66,6 +60,22 @@ objectdef bwlUplink
 
         ; push updated setting
         relay all "BWLSession.Settings.SwapOnActivate:Set[${newValue}]"
+    }
+
+    method ToggleSwapOnHotkeyFocused()
+    {
+        This:SetSwapOnHotkeyFocused[${Settings.SwapOnHotkeyFocused.Not}]
+    }
+
+    method SetSwapOnHotkeyFocused(bool newValue)
+    {
+        if ${newValue}==${Settings.SwapOnHotkeyFocused}
+            return
+        Settings.SwapOnHotkeyFocused:Set[${newValue}]
+        Settings:Store
+
+        ; push updated setting
+        relay all "BWLSession.Settings.SwapOnHotkeyFocused:Set[${newValue}]"
     }
 
     method ToggleLeaveHole()

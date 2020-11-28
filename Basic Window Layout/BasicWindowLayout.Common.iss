@@ -56,6 +56,10 @@ objectdef bwlSettings
             return
         }
 
+
+        if ${jo.Has[swapOnHotkeyFocused]}
+            SwapOnHotkeyFocused:Set["${jo.Get[swapOnHotkeyFocused]~}"]
+
         if ${jo.Has[swapOnActivate]}
             SwapOnActivate:Set["${jo.Get[swapOnActivate]~}"]
 
@@ -102,6 +106,7 @@ objectdef bwlSettings
         jo:SetValue["$$>
         {
             "swapOnActivate":${SwapOnActivate.AsJSON~},
+            "swapOnHotkeyFocused":${SwapOnHotkeyFocused.AsJSON~},
             "leaveHole":${LeaveHole.AsJSON~},
             "focusFollowsMouse":${FocusFollowsMouse.AsJSON~},
             "avoidTaskbar":${AvoidTaskbar.AsJSON~},
@@ -120,6 +125,7 @@ objectdef bwlSettings
 
 
     variable bool SwapOnActivate=TRUE
+    variable bool SwapOnHotkeyFocused=TRUE
     variable bool LeaveHole=TRUE
     variable bool FocusFollowsMouse=FALSE    
     variable bool AvoidTaskbar=FALSE
