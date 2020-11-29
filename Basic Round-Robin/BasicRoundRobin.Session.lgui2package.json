@@ -1,0 +1,48 @@
+{
+    "$schema": "http://www.lavishsoft.com/schema/lgui2Package.json",    
+    "templates": {
+        "brr.allButtons":{
+            "type":"panel",
+            "name":"basicRoundRobin.allButtons",
+            "visibility":"hidden",
+            "horizontalAlignment":"center",
+            "yFactor":0.3,
+            "borderBrush":{
+                "color":"#ff00ff00"
+            },
+            "acceptsKeyboardFocus":false,
+            "acceptsMouseFocus":false,
+            "borderThickness":5,
+            "content":{
+                "type":"textblock",
+                "text":"Round-Robin Enabled",
+                "margin":5
+            },
+            "inputHooks": {
+                "hook1":{
+                    "control":{
+                        "controlType": "button",
+                        "deviceType": "keyboard",
+                        "minValue": 0.0,
+                        "maxValue": 0.0
+                    },
+                    "eventHandler":{
+                        "type":"method",
+                        "object":"BRRSession",
+                        "method":"OnButtonHook"
+                    },
+                    "keyboardFocus": false,
+                    "mouseFocus": false
+                }
+            }
+        }
+    },
+    "elements": [
+        {
+            "type": "window",
+            "name": "basicRoundRobin.window",
+            "title": "Basic Round-Robin",
+            "visibility":"hidden"            
+        }
+    ]
+}
