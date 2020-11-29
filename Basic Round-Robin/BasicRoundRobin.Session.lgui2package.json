@@ -4,20 +4,19 @@
         "brr.allButtons":{
             "type":"panel",
             "name":"basicRoundRobin.allButtons",
-            "visibility":"hidden",
-            "horizontalAlignment":"center",
-            "yFactor":0.3,
+            "visibility":"visible",
+            "horizontalAlignment":"stretch",
+            "verticalAlignment":"stretch",
+            "margin":3,
+            "borderThickness":3,
             "borderBrush":{
-                "color":"#ff00ff00"
+                "color":"#ffffff00"
+            },
+            "backgroundBrush":{
+                "color":"#00000000"
             },
             "acceptsKeyboardFocus":false,
             "acceptsMouseFocus":false,
-            "borderThickness":5,
-            "content":{
-                "type":"textblock",
-                "text":"Round-Robin Enabled",
-                "margin":5
-            },
             "inputHooks": {
                 "hook1":{
                     "control":{
