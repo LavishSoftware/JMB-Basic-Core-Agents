@@ -95,7 +95,6 @@
                             "children":[                                
                                 {
                                     "type":"button",
-                                    "jsonTemplate":"bl.button",
                                     "content":"Reload Basic Window Layout",
                                     "margin":[5,5,5,0],
                                     "eventHandlers":{
