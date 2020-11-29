@@ -5,10 +5,17 @@ objectdef bwlSession
     variable taskmanager TaskManager=${LMAC.NewTaskManager["bwlSession"]}
     variable bwlSettings Settings
 
+    variable bwlHorizontalLayout HorizontalLayout
+    variable bwlVerticalLayout VerticalLayout
+    variable bwlCustomWindowLayout CustomLayout
+    variable weakref CurrentLayout
+
     variable bool Applied
 
     method Initialize()
     {
+        This:UpdateCurrentLayout
+
         LavishScript:RegisterEvent[On Activate]
         LavishScript:RegisterEvent[OnWindowStateChanging]
 		LavishScript:RegisterEvent[OnMouseEnter]
@@ -31,78 +38,32 @@ objectdef bwlSession
         TaskManager:Destroy
     }
 
+    method UpdateCurrentLayout()
+    {
+        switch ${Settings.UseLayout}
+        {
+            default
+            case Horizontal
+                CurrentLayout:SetReference["HorizontalLayout"]
+                break
+            case Vertical
+                CurrentLayout:SetReference["VerticalLayout"]
+                break
+            case Custom
+                CurrentLayout:SetReference["CustomLayout"]
+                break
+        }
+    }
+
+    method SelectLayout(string newValue)
+    {
+        Settings.UseLayout:Set["${newValue~}"]
+        This:UpdateCurrentLayout
+    }
+
     method ApplyWindowLayout(bool setOtherSlots=TRUE)
     {
-        variable jsonvalueref Slots="JMB.Slots"
-
-        variable uint monitorWidth=${Display.Monitor.Width}
-        variable uint monitorHeight=${Display.Monitor.Height}
-        variable int monitorX=${Display.Monitor.Left}
-        variable int monitorY=${Display.Monitor.Top}
-
-        variable uint mainHeight
-        variable uint numSmallRegions=${Slots.Used}
-        variable uint mainWidth
-        variable uint smallHeight
-        variable uint smallWidth
-
-        if ${Settings.AvoidTaskbar}
-        {
-            monitorX:Set["${Display.Monitor.MaximizeLeft}"]
-            monitorY:Set["${Display.Monitor.MaximizeTop}"]
-            monitorWidth:Set["${Display.Monitor.MaximizeWidth}"]
-            monitorHeight:Set["${Display.Monitor.MaximizeHeight}"]
-        }
-
-
-        ; if there's only 1 window, just go full screen windowed
-        if ${numSmallRegions}==1
-        {
-            WindowCharacteristics -pos -viewable ${monitorX},${monitorY} -size -viewable ${monitorWidth}x${monitorHeight} -frame none
-            This.Applied:Set[1]
-            return
-        }
-
-        if !${Settings.LeaveHole}
-            numSmallRegions:Dec
-
-        ; 2 windows is actually a 50/50 split screen and should probably handle differently..., pretend there's 3
-        if ${numSmallRegions}==2
-            numSmallRegions:Set[3]
-
-        mainWidth:Set["${monitorWidth}"]
-        mainHeight:Set["${monitorHeight}*${numSmallRegions}/(${numSmallRegions}+1)"]
-
-        smallHeight:Set["${monitorHeight}-${mainHeight}"]
-        smallWidth:Set["${monitorWidth}/${numSmallRegions}"]
-
-        WindowCharacteristics -pos -viewable ${monitorX},${monitorY} -size -viewable ${mainWidth}x${mainHeight} -frame none
-        This.Applied:Set[1]
-
-        if !${setOtherSlots}
-            return
-
-        variable uint numSmallRegion
-        variable int useX
-        variable uint numSlot
-
-        variable uint slotID
-
-        for (numSlot:Set[1] ; ${numSlot}<=${Slots.Used} ; numSlot:Inc)
-        {
-            slotID:Set["${Slots[${numSlot}].Get[id]~}"]
-            if ${slotID}!=${JMB.Slot}
-            {
-                relay jmb${slotID} "WindowCharacteristics -stealth -pos -viewable ${useX},${mainHeight} -size -viewable ${smallWidth}x${smallHeight} -frame none"
-                useX:Inc["${smallWidth}"]
-            }
-            else
-            {
-                if ${Settings.LeaveHole}
-                    useX:Inc["${smallWidth}"]
-            }
-            
-        }
+        CurrentLayout:ApplyWindowLayout[${setOtherSlots}]        
     }
 
     method OnActivate()

@@ -94,6 +94,17 @@ objectdef bwlUplink
         relay all "BWLSession.Settings.LeaveHole:Set[${newValue}]"
     }    
 
+    method SelectLayout(string newValue)
+    {
+        if ${newValue.Equal["${Settings.UseLayout~}"]}
+            return
+
+        Settings.UseLayout:Set["${newValue~}"]
+        Settings:Store
+
+        relay all "BWLSession:SelectLayout[${newValue.AsJSON~}]"
+    }
+
     method ApplyWindowLayout()
     {
         relay jmb1 "BWLSession:ApplyWindowLayout"
