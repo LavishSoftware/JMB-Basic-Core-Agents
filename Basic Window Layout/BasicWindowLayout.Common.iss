@@ -100,7 +100,7 @@ objectdef bwlSettings
     {
         variable jsonvalue jo
         jo:SetValue["${This.AsJSON~}"]
-        jo:WriteFile["${AgentFolder~}/bwl.Settings.json",TRUE]
+        jo:WriteFile["${AgentFolder~}/bwl.Settings.json",multiline]
     }
 
     member AsJSON()
@@ -353,84 +353,6 @@ objectdef bwlVerticalLayout
             }
             
         }
-    }
-}
-
-; unfinished, just use custom layout
-objectdef bwlTwoScreenTileLayout
-{
-    member ToText()
-    {
-        return "2-screen Tile"   
-    }
-
-    variable uint useMonitor1=1
-    variable uint useMonitor2=2
-
-    method ApplyWindowLayout(bool setOtherSlots=TRUE)
-    {
-        variable jsonvalueref Slots="JMB.Slots"
-
-        ; this will be the second screen
-        variable uint monitor2Width=${Display.Monitor[${useMonitor2}].Width}
-        variable uint monitor2Height=${Display.Monitor[${useMonitor2}].Height}
-        variable int monitor2X=${Display.Monitor[${useMonitor2}].Left}
-        variable int monitor2Y=${Display.Monitor[${useMonitor2}].Top}
-
-        variable uint mainHeight=${Display.Monitor[${useMonitor1}].Width}
-        variable uint mainWidth=${Display.Monitor[${useMonitor1}].Width}
-        variable int mainX=${Display.Monitor[${useMonitor1}].Left}
-        variable int mainY=${Display.Monitor[${useMonitor1}].Top}
-
-        variable uint numSmallRegions=${Slots.Used}
-        variable uint smallHeight
-        variable uint smallWidth
-
-        if ${BWLSession.Settings.AvoidTaskbar}
-        {
-            monitor2X:Set["${Display.Monitor[${useMonitor2}].MaximizeLeft}"]
-            monitor2Y:Set["${Display.Monitor[${useMonitor2}].MaximizeTop}"]
-            monitor2Width:Set["${Display.Monitor[${useMonitor2}].MaximizeWidth}"]
-            monitor2Height:Set["${Display.Monitor[${useMonitor2}].MaximizeHeight}"]
-
-            mainX:Set["${Display.Monitor[${useMonitor1}].MaximizeLeft}"]
-            mainY:Set["${Display.Monitor[${useMonitor1}].MaximizeTop}"]
-            mainWidth:Set["${Display.Monitor[${useMonitor1}].MaximizeWidth}"]
-            mainHeight:Set["${Display.Monitor[${useMonitor1}].MaximizeHeight}"]
-
-        }
-
-        ; if there's only 1 window, just go full screen windowed
-        if ${numSmallRegions}==1
-        {
-            WindowCharacteristics -pos -viewable ${mainX},${mainY} -size -viewable ${mainWidth}x${mainHeight} -frame none
-            BWLSession.Applied:Set[1]
-            return
-        }
-
-        /*
-        if ${numSmallRegions}==2
-        {
-            if ${JMB.Slot}==1
-                WindowCharacteristics -pos -viewable ${mainX},${mainY} -size -viewable ${mainWidth}x${mainHeight} -frame none
-            else if ${JMB.Slot}==2
-                WindowCharacteristics -pos -viewable ${monitor2X},${monitor2Y} -size -viewable ${monitor2Width}x${monitor2Height} -frame none
-
-            BWLSession.Applied:Set[1]
-            return
-        }
-        /**/
-
-        WindowCharacteristics -pos -viewable ${mainX},${mainY} -size -viewable ${mainWidth}x${mainHeight} -frame none
-        BWLSession.Applied:Set[1]
-
-        if !${BWLSession.Settings.LeaveHole}
-            numSmallRegions:Dec
-
-        if !${setOtherSlots}
-            return
-
-        ; todo...
     }
 }
 

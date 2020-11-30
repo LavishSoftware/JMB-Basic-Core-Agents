@@ -69,7 +69,7 @@ objectdef bghUplink
     {
         variable jsonvalue jo
         jo:SetValue["${This.AsJSON~}"]
-        jo:WriteFile["${AgentFolder~}/bgh.Settings.json",TRUE]
+        jo:WriteFile["${AgentFolder~}/bgh.Settings.json",multiline]
     }
 
     member AsJSON()

@@ -54,7 +54,7 @@ objectdef brrSettings
     {
         variable jsonvalue jo
         jo:SetValue["${This.AsJSON~}"]
-        jo:WriteFile["${AgentFolder~}/brr.Settings.json",TRUE]
+        jo:WriteFile["${AgentFolder~}/brr.Settings.json",multiline]
     }
 
     member AsJSON()
