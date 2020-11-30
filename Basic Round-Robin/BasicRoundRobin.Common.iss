@@ -63,7 +63,10 @@ objectdef brrSettings
         jo:SetValue["$$>
         {
             "enable":${Enable.AsJSON~},
-            "overrides":${Overrides.AsJSON~}
+            "overrides":${Overrides.AsJSON~},
+            "hotkeys":{
+                "toggleRoundRobin":${hotkeyToggleRoundRobin.AsJSON~}
+            }
         }
         <$$"]
         return "${jo.AsJSON~}"
