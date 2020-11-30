@@ -7,6 +7,7 @@ objectdef bwlUplink
     method Initialize()
     {
         LGUI2:LoadPackageFile[BasicWindowLayout.Uplink.lgui2Package.json]
+        Settings:Store
     }
 
     method Shutdown()

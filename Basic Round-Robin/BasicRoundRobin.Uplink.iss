@@ -7,6 +7,7 @@ objectdef brrUplink
     method Initialize()
     {
         LGUI2:LoadPackageFile[BasicRoundRobin.Uplink.lgui2Package.json]
+        Settings:Store
     }
 
     method Shutdown()
