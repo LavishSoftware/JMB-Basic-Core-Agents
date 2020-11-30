@@ -75,6 +75,9 @@ objectdef bwlSettings
         if ${jo.Has[useLayout]}
             UseLayout:Set["${jo.Get[useLayout]~}"]
 
+        if ${jo.Has[customLayout]}
+            CustomLayout:SetValue["${jo.Get[customLayout].AsJSON~}"]
+
         variable jsonvalue joHotkeys
         joHotkeys:SetValue["${jo.Get[hotkeys].AsJSON~}"]
 
