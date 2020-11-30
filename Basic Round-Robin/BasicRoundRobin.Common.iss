@@ -27,10 +27,10 @@ objectdef brrSettings
     method Load()
     {
         variable jsonvalue jo
-        if !${AgentFolder.FileExists[bwl.Settings.json]}
+        if !${AgentFolder.FileExists[brr.Settings.json]}
             return
 
-        if !${jo:ParseFile["${AgentFolder~}/bwl.Settings.json"](exists)} || !${jo.Type.Equal[object]}
+        if !${jo:ParseFile["${AgentFolder~}/brr.Settings.json"](exists)} || !${jo.Type.Equal[object]}
         {
             return
         }
