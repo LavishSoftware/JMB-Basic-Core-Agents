@@ -55,19 +55,19 @@ objectdef brrSession
         BWLSession:NextWindow[${Settings.SwitchAsHotkey}]
     }
 
-    method OnButtonHook()
+    method OnControlHook(string controlName)
     {
         variable bool Advance=${Settings.DefaultAllow}
 
         ; check for overrides
 
         variable jsonvalueref Override
-        Override:SetReference["Settings.Overrides[${Context.Args[controlName].AsJSON~}]"]
+        Override:SetReference["Settings.Overrides[${controlName.AsJSON~}]"]
 
         if ${Override.Type.Equal[object]}
         {
 
-;            echo "Keyboard button released: \"${Context.Args[controlName]}\" override=${Override.AsJSON~}"
+;            echo "Button released: \"${Context.Args[controlName]}\" override=${Override.AsJSON~}"
 
             if ${Override.Get[allow]}
             {
@@ -80,11 +80,23 @@ objectdef brrSession
         }
         else
         {
-;            echo "Keyboard button released: \"${Context.Args[controlName]}\""
+;            echo "Button released: \"${Context.Args[controlName]}\""
         }
 
         if ${Advance}
             This:NextWindow
+
+    }
+
+    method OnButtonHook()
+    {
+        This:OnControlHook["${Context.Args[controlName]~}"]
+    }
+
+    method OnMouseButtonHook()
+    {
+        if ${This.IncludeMouse}
+            This:OnControlHook["${Context.Args[controlName]~}"]
     }
 
     method Enable()

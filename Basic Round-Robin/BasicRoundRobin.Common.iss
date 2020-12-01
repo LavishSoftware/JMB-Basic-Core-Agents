@@ -37,6 +37,8 @@ objectdef brrSettings
 
         if ${jo.Has[enable]}
             Enable:Set["${jo.Get[enable]~}"]
+        if ${jo.Has[includeMouse]}
+            IncludeMouse:Set["${jo.Get[includeMouse]~}"]
         if ${jo.Has[defaultAllow]}
             DefaultAllow:Set["${jo.Get[defaultAllow]~}"]
         if ${jo.Has[switchAsHotkey]}
@@ -69,6 +71,7 @@ objectdef brrSettings
         jo:SetValue["$$>
         {
             "enable":${Enable.AsJSON~},
+            "includeMouse":${IncludeMouse.AsJSON~},
             "overrides":${Overrides.AsJSON~},
             "defaultAllow":${DefaultAllow.AsJSON~},
             "switchAsHotkey":${SwitchAsHotkey.AsJSON~},
@@ -83,5 +86,6 @@ objectdef brrSettings
     variable bool Enable=FALSE
     variable bool DefaultAllow=TRUE
     variable bool SwitchAsHotkey=TRUE
+    variable bool IncludeMouse=FALSE
     variable jsonvalue Overrides
 }

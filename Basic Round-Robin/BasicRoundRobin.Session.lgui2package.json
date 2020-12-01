@@ -43,6 +43,21 @@
                     },
                     "keyboardFocus": false,
                     "mouseFocus": false
+                },
+                "hook2":{
+                    "control":{
+                        "controlType": "button",
+                        "deviceType": "mouse",
+                        "minValue": 0.0,
+                        "maxValue": 0.0
+                    },
+                    "eventHandler":{
+                        "type":"method",
+                        "object":"BRRSession",
+                        "method":"OnMouseButtonHook"
+                    },
+                    "keyboardFocus": false,
+                    "mouseFocus": false
                 }
             }
         }
