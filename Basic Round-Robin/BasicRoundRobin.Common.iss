@@ -39,6 +39,9 @@ objectdef brrSettings
         if ${jo.Has[enable]}
             Enable:Set["${jo.Get[enable]~}"]
 
+        if ${jo.Has[overrides]}
+            Overrides:SetValue["${jo.Get[overrides].AsJSON~}"]
+
         variable jsonvalue joHotkeys
         joHotkeys:SetValue["${jo.Get[hotkeys].AsJSON~}"]
 
