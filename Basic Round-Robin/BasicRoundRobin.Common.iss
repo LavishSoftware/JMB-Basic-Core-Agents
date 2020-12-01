@@ -35,9 +35,12 @@ objectdef brrSettings
             return
         }
 
-
         if ${jo.Has[enable]}
             Enable:Set["${jo.Get[enable]~}"]
+        if ${jo.Has[defaultAllow]}
+            DefaultAllow:Set["${jo.Get[defaultAllow]~}"]
+        if ${jo.Has[switchAsHotkey]}
+            SwitchAsHotkey:Set["${jo.Get[switchAsHotkey]~}"]
 
         if ${jo.Has[overrides]}
             Overrides:SetValue["${jo.Get[overrides].AsJSON~}"]
@@ -67,6 +70,8 @@ objectdef brrSettings
         {
             "enable":${Enable.AsJSON~},
             "overrides":${Overrides.AsJSON~},
+            "defaultAllow":${DefaultAllow.AsJSON~},
+            "switchAsHotkey":${SwitchAsHotkey.AsJSON~},
             "hotkeys":{
                 "toggleRoundRobin":${hotkeyToggleRoundRobin.AsJSON~}
             }
@@ -76,5 +81,7 @@ objectdef brrSettings
     }
 
     variable bool Enable=FALSE
+    variable bool DefaultAllow=TRUE
+    variable bool SwitchAsHotkey=TRUE
     variable jsonvalue Overrides
 }

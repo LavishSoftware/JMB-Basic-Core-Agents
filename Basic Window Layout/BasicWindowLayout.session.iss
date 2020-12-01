@@ -143,7 +143,7 @@ objectdef bwlSession
         return ${Slot}
     }
 
-    method PreviousWindow()
+    method PreviousWindow(bool hotkeyFocused=TRUE)
     {
         variable uint previousSlot=${This.GetPreviousSlot}
         if !${previousSlot}
@@ -153,10 +153,11 @@ objectdef bwlSession
             return
 
         uplink focus "jmb${previousSlot}"
-        relay "jmb${previousSlot}" "Event[OnHotkeyFocused]:Execute"
+        if ${hotkeyFocused}
+            relay "jmb${previousSlot}" "Event[OnHotkeyFocused]:Execute"
     }
 
-    method NextWindow()
+    method NextWindow(bool hotkeyFocused=TRUE)
     {
         variable uint nextSlot=${This.GetNextSlot}
         if !${nextSlot}
@@ -166,7 +167,8 @@ objectdef bwlSession
             return
 
         uplink focus "jmb${nextSlot}"
-        relay "jmb${nextSlot}" "Event[OnHotkeyFocused]:Execute"
+        if ${hotkeyFocused}
+            relay "jmb${nextSlot}" "Event[OnHotkeyFocused]:Execute"
     }
 
     method Fullscreen()

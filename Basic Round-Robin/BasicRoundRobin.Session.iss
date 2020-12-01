@@ -52,12 +52,12 @@ objectdef brrSession
     }
     method NextWindow()
     {
-        BWLSession:NextWindow
+        BWLSession:NextWindow[${Settings.SwitchAsHotkey}]
     }
 
     method OnButtonHook()
     {
-        
+        variable bool Advance=${Settings.DefaultAllow}
 
         ; check for overrides
 
@@ -66,16 +66,25 @@ objectdef brrSession
 
         if ${Override.Type.Equal[object]}
         {
+
 ;            echo "Keyboard button released: \"${Context.Args[controlName]}\" override=${Override.AsJSON~}"
+
+            if ${Override.Get[allow]}
+            {
+                Advance:Set[1]
+            }
             if ${Override.Get[ignore]}
-                return
+            {
+                Advance:Set[0]
+            }
         }
         else
         {
 ;            echo "Keyboard button released: \"${Context.Args[controlName]}\""
         }
 
-        This:NextWindow
+        if ${Advance}
+            This:NextWindow
     }
 
     method Enable()
