@@ -4,6 +4,8 @@ objectdef brrUplink
 {
     variable brrSettings Settings
 
+    variable bool RestoreFocusFollowsMouse
+
     method Initialize()
     {
         LGUI2:LoadPackageFile[BasicRoundRobin.Uplink.lgui2Package.json]
@@ -31,6 +33,20 @@ objectdef brrUplink
         if ${newValue}==${Settings.Enable}
             return
         Settings.Enable:Set[${newValue}]
+
+        if ${newValue}
+        {
+            RestoreFocusFollowsMouse:Set[${BWLUplink.FocusFollowsMouse}]
+            BWLUplink:SetFocusFollowsMouse[FALSE]
+        }
+        else
+        {
+            if ${RestoreFocusFollowsMouse}
+            {
+                BWLUplink:SetFocusFollowsMouse[TRUE]
+            }
+        }
+
 ;        Settings:Store
 
         ; push updated setting
