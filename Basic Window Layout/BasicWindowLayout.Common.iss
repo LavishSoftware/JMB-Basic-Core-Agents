@@ -78,6 +78,9 @@ objectdef bwlSettings
         if ${jo.Has[customLayout]}
             CustomLayout:SetValue["${jo.Get[customLayout].AsJSON~}"]
 
+        if ${jo.Has[overrides]}
+            Overrides:SetValue["${jo.Get[overrides].AsJSON~}"]
+
         variable jsonvalue joHotkeys
         joHotkeys:SetValue["${jo.Get[hotkeys].AsJSON~}"]
 
