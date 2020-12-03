@@ -11,6 +11,7 @@ objectdef bghSession
     method Initialize()
     {
         LavishScript:RegisterEvent[On3DReset]
+        LavishScript:RegisterEvent[OnHotkeyFocused]
         Event[On3DReset]:AttachAtom[This:On3DReset]
 
         This:LoadSettings
@@ -69,7 +70,7 @@ objectdef bghSession
         
         HotkeyInstalled:Set[1]
         
-        globalbind "focus" "${GlobalHotkeys.Get[${Slot}]~}" "windowvisibility foreground"
+        globalbind "focus" "${GlobalHotkeys.Get[${Slot}]~}" "BGHSession:OnGlobalHotkey"
 
         if ${JMB.Build}<6741
         {
@@ -122,6 +123,7 @@ objectdef bghSession
             return
 
         uplink focus "jmb${previousSlot}"
+        relay "jmb${previousSlot}" "Event[OnHotkeyFocused]:Execute"
     }
 
     method NextWindow()
@@ -134,6 +136,7 @@ objectdef bghSession
             return
 
         uplink focus "jmb${nextSlot}"
+        relay "jmb${nextSlot}" "Event[OnHotkeyFocused]:Execute"
     }
 
     method UninstallHotkey()
@@ -155,6 +158,12 @@ objectdef bghSession
     method On3DReset()
     {
         This:InstallHotkey
+    }
+
+    method OnGlobalHotkey()
+    {
+        windowvisibility foreground
+        Event[OnHotkeyFocused]:Execute
     }
 }
 

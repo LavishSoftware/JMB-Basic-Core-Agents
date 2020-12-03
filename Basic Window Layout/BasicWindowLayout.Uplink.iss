@@ -4,15 +4,10 @@ objectdef bwlUplink
 {
     variable bwlSettings Settings
 
-    variable bool SwapOnActivate=TRUE
-    variable bool LeaveHole=TRUE
-    variable bool FocusFollowsMouse=FALSE    
-    variable bool AvoidTaskbar=FALSE
-
-
     method Initialize()
     {
         LGUI2:LoadPackageFile[BasicWindowLayout.Uplink.lgui2Package.json]
+        Settings:Store
     }
 
     method Shutdown()
@@ -68,6 +63,22 @@ objectdef bwlUplink
         relay all "BWLSession.Settings.SwapOnActivate:Set[${newValue}]"
     }
 
+    method ToggleSwapOnHotkeyFocused()
+    {
+        This:SetSwapOnHotkeyFocused[${Settings.SwapOnHotkeyFocused.Not}]
+    }
+
+    method SetSwapOnHotkeyFocused(bool newValue)
+    {
+        if ${newValue}==${Settings.SwapOnHotkeyFocused}
+            return
+        Settings.SwapOnHotkeyFocused:Set[${newValue}]
+        Settings:Store
+
+        ; push updated setting
+        relay all "BWLSession.Settings.SwapOnHotkeyFocused:Set[${newValue}]"
+    }
+
     method ToggleLeaveHole()
     {
         This:SetLeaveHole[${Settings.LeaveHole.Not}]
@@ -83,6 +94,17 @@ objectdef bwlUplink
         ; push updated setting
         relay all "BWLSession.Settings.LeaveHole:Set[${newValue}]"
     }    
+
+    method SelectLayout(string newValue)
+    {
+        if ${newValue.Equal["${Settings.UseLayout~}"]}
+            return
+
+        Settings.UseLayout:Set["${newValue~}"]
+        Settings:Store
+
+        relay all "BWLSession:SelectLayout[${newValue.AsJSON~}]"
+    }
 
     method ApplyWindowLayout()
     {

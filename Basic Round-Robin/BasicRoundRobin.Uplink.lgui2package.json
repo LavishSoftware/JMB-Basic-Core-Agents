@@ -1,0 +1,70 @@
+{
+    "$schema": "http://www.lavishsoft.com/schema/lgui2Package.json",        
+    "elements": [
+        {
+            "type": "window",
+            "name": "basicRoundRobin.window",
+            "title": "Basic Round-Robin",
+            "visibility":"visible",
+            "content":{
+                "type":"stackpanel",
+                "backgroundBrush":{
+                    "color":"#FF003322"
+                },
+                "padding":20,
+                "children":[
+                    {
+                        "type":"textblock",
+                        "text":"Joe Multiboxer: Basic Round-Robin",
+                        "margin":5,
+                        "font":{
+                            "bold":true,
+                            "face":"Verdana",
+                            "heightFactor":1.5
+                        }
+                    },
+                    {
+                        "type":"stackpanel",
+                        "horizontalContentAlignment":"left",
+                        "font":{
+                          "heightFactor":1.2  
+                        },
+                        "children":[
+                            {
+                                "type":"checkbox",
+                                "content":"Enable Round-Robin Mode",
+                                "checkedBinding":{
+                                    "pullFormat":"${BRRUplink.Settings.Enable}",
+                                    "pushFormat":["BRRUplink:SetEnable[\"","\"]"]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type":"expander",
+                        "margin":5,
+                        "header":"More ...",
+                        "expanded":false,
+                        "content":{
+                            "type":"stackpanel",
+                            "orientation":"vertical",
+                            "children":[                                
+                                {
+                                    "type":"button",
+                                    "content":"Reload Basic Round-Robin",
+                                    "margin":[5,5,5,0],
+                                    "eventHandlers":{
+                                        "onPress":{
+                                            "type":"code",
+                                            "code":"JMB.Agent[Basic Round-Robin]:Stop:Start"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
