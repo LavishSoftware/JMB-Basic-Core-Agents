@@ -8,7 +8,7 @@
 
 objectdef layoutType
 {
-    variable string name
+    variable string name="undefined"
     variable uint monitorWidth=${Display.Monitor.Width}
     variable uint monitorHeight=${Display.Monitor.Height}
     variable int monitorX=${Display.Monitor.Left}
@@ -19,7 +19,7 @@ objectdef layoutType
     variable uint smallHeight
     variable uint smallWidth
     variable uint numSmallRegions
-    member:string getWindowCharacteristics(uint SlotID, bool isMain, bool avoidTaskbar, bool leaveHole) 
+    member:string getWindowCharacteristics(uint slotID, uint mainSlotID, bool avoidTaskbar, bool leaveHole)
     {
         ; Return a windows charateristic string.  Default to full screen if not implemented in child object
         return "WindowCharacteristics -pos -viewable ${monitorX},${monitorY} -size -viewable ${monitorWidth}x${monitorHeight} -frame none"
@@ -46,6 +46,8 @@ objectdef layoutType
 
 objectdef bwlLayoutController
 {
+    
+
     variable jsonvalueref Slots="JMB.Slots"
     variable filepath LayoutFolder="${Script.CurrentDirectory}/Layouts"
 
@@ -60,6 +62,14 @@ objectdef bwlLayoutController
 
     method Initialize()
     {
-        activeLayout:set[LayoutBottom]
     }
-}
+    
+    member:string getWindowCharacteristics(uint slotID, uint mainSlotID, bool avoidTaskbar, bool leaveHole)
+    {
+        This.activeLayout:getWindowCharacteristics(uint slotID, uint mainSlotID, bool avoidTaskbar, bool leaveHole)
+    }
+
+    method setActiveLayout(string layoutName)
+    {
+    }
+} 

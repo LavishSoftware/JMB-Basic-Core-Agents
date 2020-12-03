@@ -2,7 +2,7 @@
 
 objectdef layoutTop inherits layoutType
 {
-    variable string name
+    variable string name="layoutTop"
     variable uint monitorWidth=${Display.Monitor.Width}
     variable uint monitorHeight=${Display.Monitor.Height}
     variable int monitorX=${Display.Monitor.Left}

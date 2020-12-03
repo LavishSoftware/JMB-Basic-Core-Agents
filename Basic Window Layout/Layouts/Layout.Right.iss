@@ -2,13 +2,13 @@
 
 objectdef layoutRight inherits layoutType
 {
-    variable string name
+    variable string name="layoutRight"
     variable uint monitorWidth=${Display.Monitor.Width}
     variable uint monitorHeight=${Display.Monitor.Height}
     variable int monitorX=${Display.Monitor.Left}
     variable int monitorY=${Display.Monitor.Top}
     variable uint mainHeight
-    variable uint mainWidth
+    variable uint mainWidth 
     variable uint smallHeight
     variable uint smallWidth
     variable uint numSmallRegions

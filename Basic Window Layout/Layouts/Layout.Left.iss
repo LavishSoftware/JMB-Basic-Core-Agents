@@ -2,7 +2,7 @@
 
 objectdef layoutLeft inherits layoutType
 {
-    variable string name
+    variable string name=name="layoutLeft"
     variable uint monitorWidth=${Display.Monitor.Width}
     variable uint monitorHeight=${Display.Monitor.Height}
     variable int monitorX=${Display.Monitor.Left}
