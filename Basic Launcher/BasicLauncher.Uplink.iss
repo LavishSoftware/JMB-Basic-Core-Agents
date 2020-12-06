@@ -1,3 +1,55 @@
+objectdef basiclauncherSettings
+{
+   variable filepath AgentFolder="${Script.CurrentDirectory}"
+    
+    variable uint LaunchSlots=3
+
+    variable string UseGame
+
+    method Initialize()
+    {    
+        This:Load
+    }
+
+    method Load()
+    {
+        variable jsonvalue jo
+        if !${AgentFolder.FileExists[bl.Settings.json]}
+            return
+
+        if !${jo:ParseFile["${AgentFolder~}/bl.Settings.json"](exists)} || !${jo.Type.Equal[object]}
+        {
+            return
+        }
+
+        if ${jo.Has[launchSlots]}
+            LaunchSlots:Set["${jo.Get[launchSlots]~}"]
+
+        if ${jo.Has[useGame]}
+            UseGame:Set["${jo.Get[useGame]~}"]
+    }
+
+
+    method Store()
+    {
+        variable jsonvalue jo
+        jo:SetValue["${This.AsJSON~}"]
+        jo:WriteFile["${AgentFolder~}/bl.Settings.json",multiline]
+    }
+
+    member AsJSON()
+    {
+        variable jsonvalue jo
+        jo:SetValue["$$>
+        {
+            "launchSlots":${LaunchSlots.AsJSON~},
+            "useGame":${UseGame.AsJSON~},
+        }
+        <$$"]
+        return "${jo.AsJSON~}"
+    }
+}
+
 objectdef basiclauncher
 {
     method Initialize()
@@ -6,8 +58,8 @@ objectdef basiclauncher
 
         Event[GamesChanged]:AttachAtom[This:RefreshGames]
 
+        Settings:Store
         This:RefreshGames
-
         LGUI2:LoadPackageFile[BasicLauncher.Uplink.lgui2Package.json]
     }
 
@@ -16,21 +68,20 @@ objectdef basiclauncher
         LGUI2:UnloadPackageFile[BasicLauncher.Uplink.lgui2Package.json]
     }
 
-    variable uint LaunchSlots=3
     variable bool ReplaceSlots=TRUE
-
-    variable string UseGame
     variable jsonvalue Games="[]"
+
+    variable basiclauncherSettings Settings
 
     method InstallCharacter(uint Slot)
     {
-        variable string UseGameProfile="${UseGame~} Default Profile"
+        variable string UseGameProfile="${Settings.UseGame~} Default Profile"
         variable jsonvalue jo
         jo:SetValue["$$>
         {
             "id":${Slot},
             "display_name":"Generic Character",
-            "game":${UseGame.AsJSON~},
+            "game":${Settings.UseGame.AsJSON~},
             "gameProfile":${UseGameProfile.AsJSON~}
             "virtualFiles":[
                 {
@@ -52,13 +103,30 @@ objectdef basiclauncher
         
         variable uint Slot
         variable uint NumAdded
-        for (NumAdded:Set[1] ; ${NumAdded}<=${LaunchSlots} ; NumAdded:Inc)
+        for (NumAdded:Set[1] ; ${NumAdded}<=${Settings.LaunchSlots} ; NumAdded:Inc)
         {
             Slot:Set["${JMB.AddSlot.ID}"]
             This:InstallCharacter[${Slot}]
             JMB.Slot[${Slot}]:SetCharacter[${Slot}]
             JMB.Slot[${Slot}]:Launch
         }
+    }
+
+    method SetGame(string newValue)
+    {
+        if ${newValue.Equal["${Settings.UseGame~}"]}
+            return
+
+        Settings.UseGame:Set["${newValue~}"]
+        Settings:Store
+    }
+
+    method SetLaunchSlots(uint newValue)
+    {
+        if ${newValue}==${Settings.LaunchSlots}
+            return
+        Settings.LaunchSlots:Set[${newValue}]
+        Settings:Store
     }
 
     method AllFullScreen()
@@ -78,7 +146,7 @@ objectdef basiclauncher
 
     method GenerateItemView_Game()
 	{
-        echo GenerateItemView_Game ${Context(type)} ${Context.Args}
+       ; echo GenerateItemView_Game ${Context(type)} ${Context.Args}
 
 		; build an itemview lgui2element json
 		variable jsonvalue joListBoxItem
