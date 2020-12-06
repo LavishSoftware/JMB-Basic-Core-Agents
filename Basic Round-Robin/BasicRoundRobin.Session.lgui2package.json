@@ -64,6 +64,11 @@
     },
     "elements": [
         {
+            "type":"panel",
+            "visibility":"hidden",
+            "name":"basicRoundRobin.events"
+        },
+        {
             "type": "window",
             "name": "basicRoundRobin.window",
             "title": "Basic Round-Robin",

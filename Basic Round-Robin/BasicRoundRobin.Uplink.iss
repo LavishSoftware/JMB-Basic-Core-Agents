@@ -17,43 +17,34 @@ objectdef brrUplink
         LGUI2:UnloadPackageFile[BasicRoundRobin.Uplink.lgui2Package.json]
     }
 
-    method NextWindow()
+    method ToggleProfile(string newProfile)
     {
-        BWLSession:NextWindow
-    }
-
-
-    method ToggleEnable()
-    {
-        This:SetEnable[${Settings.Enable.Not}]
-    }
-
-    method SetEnable(bool newValue)
-    {
-        if ${newValue}==${Settings.Enable}
-            return
-        Settings.Enable:Set[${newValue}]
-
-        if ${newValue}
+        if !${newProfile.NotNULLOrEmpty} || ${Settings.CurrentProfile.Name.Equal["${newProfile~}"]}
         {
-            RestoreFocusFollowsMouse:Set[${BWLUplink.FocusFollowsMouse}]
-            BWLUplink:SetFocusFollowsMouse[FALSE]
-        }
-        else
-        {
+;            echo "[BRR] Disabling"
+            ; activating same profile is a toggle off
+            Settings:ClearCurrentProfile
+
+            ; push updated setting
+            relay all "BRRSession:Disable"
+
             if ${RestoreFocusFollowsMouse}
             {
                 BWLUplink:SetFocusFollowsMouse[TRUE]
             }
         }
-
-;        Settings:Store
-
-        ; push updated setting
-        if ${newValue}
-            relay all "BRRSession:Enable"
         else
-            relay all "BRRSession:Disable"
+        {
+;            echo "[BRR] Enabling"
+            if !${Settings.CurrentProfile.Reference(exists)}
+                RestoreFocusFollowsMouse:Set[${BWLUplink.Settings.FocusFollowsMouse}]
+
+            BWLUplink:SetFocusFollowsMouse[FALSE]
+            Settings:SetCurrentProfile["${newProfile~}"]
+
+            ; push updated setting
+            relay all "BRRSession:Enable[${newProfile.AsJSON~}]"
+        }        
     }
 
 }
