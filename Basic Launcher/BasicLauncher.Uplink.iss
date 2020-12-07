@@ -96,6 +96,8 @@ objectdef basiclauncher
 
     method Launch()
     {
+        LGUI2.Element[bl.launchSlots]:PushTextBinding
+        
         if ${ReplaceSlots}
             JMB:ClearSlots
 
