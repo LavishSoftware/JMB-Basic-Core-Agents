@@ -112,6 +112,15 @@
                                             "event":"pushTextBinding",
                                             "flags":"self"
                                         }
+                                    },
+                                    "onLostMouseFocus":{
+                                        "flags":"self",
+                                        "event":"lostMouseFocus",
+                                        "eventHandler":{
+                                            "type":"forward",
+                                            "event":"pushTextBinding",
+                                            "flags":"self"
+                                        }
                                     }
                                 },
                                 "minSize":[30,0],
