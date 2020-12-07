@@ -1,27 +1,153 @@
+objectdef brrProfile
+{
+    variable string Name
+    variable bool DefaultAllow=TRUE
+    variable bool SwitchAsHotkey=TRUE
+    variable bool IncludeMouse=FALSE
+    variable jsonvalue Overrides
+    variable jsonvalue Hotkey
+    
+    variable bool Enabled
+
+    method Initialize(jsonvalue jo)
+    {
+        This:FromJSON[jo]
+    }
+
+    method Shutdown()
+    {
+        This:DisableHotkey
+    }
+
+    method FromJSON(jsonvalueref jo)
+    {
+        if !${jo.Type.Equal[object]}
+            return
+        
+        if ${jo.Has[includeMouse]}
+            IncludeMouse:Set["${jo.Get[includeMouse]~}"]
+        if ${jo.Has[defaultAllow]}
+            DefaultAllow:Set["${jo.Get[defaultAllow]~}"]
+        if ${jo.Has[switchAsHotkey]}
+            SwitchAsHotkey:Set["${jo.Get[switchAsHotkey]~}"]
+
+        if ${jo.Has[overrides]}
+            Overrides:SetValue["${jo.Get[overrides].AsJSON~}"]
+
+        if ${jo.Has[hotkey]}
+            Hotkey:SetValue["${jo.Get[hotkey].AsJSON~}"]
+    }
+
+    member AsJSON()
+    {
+        variable jsonvalue jo
+        jo:SetValue["$$>
+        {
+            "includeMouse":${IncludeMouse.AsJSON~},
+            "overrides":${Overrides.AsJSON~},
+            "defaultAllow":${DefaultAllow.AsJSON~},
+            "switchAsHotkey":${SwitchAsHotkey.AsJSON~},
+            "hotkey":${Hotkey.AsJSON~}
+        }
+        <$$"]
+        return "${jo.AsJSON~}"
+    }
+
+    method EnableHotkey()
+    {
+        variable jsonvalue joBinding
+        variable string startCommand
+        if ${Hotkey.Type.Equal[object]} && ${Hotkey.Has[controls]}
+        {
+            joBinding:SetValue["${Hotkey.AsJSON~}"]
+            joBinding:Set[name,"\"brr.profile.${Name~}\""]
+
+            startCommand:Set["BRRSession:ToggleProfile[${Name.AsJSON~}]"]
+
+            joBinding:Set[eventHandler,"$$>
+            {
+                "type":"task",
+                "taskManager":"brrSession",
+                "task":{
+                    "type":"ls1.code",
+                    "start":${startCommand.AsJSON~}
+                }
+            }
+            <$$"]
+
+            LGUI2:AddBinding["${joBinding.AsJSON~}"]
+
+            Enabled:Set[1]
+        }
+    }
+
+    method DisableHotkey()
+    {
+        LGUI2:RemoveBinding["brr.profile.${Name~}"]
+        Enabled:Set[0]
+    }
+}
+
 objectdef brrSettings
 {
     variable filepath AgentFolder="${Script.CurrentDirectory}"
     
-    variable jsonvalue hotkeyToggleRoundRobin="$$>
-    {
-        "controls":"F12"
-    }
-    <$$"
+
 
     method Initialize()
-    {
-        Overrides:SetValue["$$>
-    {
-        "F12":{"ignore":true},
-        "${Input.Button[160]}":{"ignore":true},
-        "${Input.Button[161]}":{"ignore":true},
-        "${Input.Button[162]}":{"ignore":true},
-        "${Input.Button[163]}":{"ignore":true},
-        "${Input.Button[164]}":{"ignore":true},
-        "${Input.Button[165]}":{"ignore":true}
-    }<$$"]
-    
+    {       
         This:Load
+
+        if !${Profiles.Used}    
+        {
+            Profiles:Set[default,"$$>
+            {
+                "defaultAllow":true,
+                "includeMouse":false,
+                "switchAsHotkey":true,
+                "hotkey":{
+                    "controls":"F12"
+                },
+                "overrides":{
+                    "F12":{"ignore":true},
+                    "${Input.Button[160]}":{"ignore":true},
+                    "${Input.Button[161]}":{"ignore":true},
+                    "${Input.Button[162]}":{"ignore":true},
+                    "${Input.Button[163]}":{"ignore":true},
+                    "${Input.Button[164]}":{"ignore":true},
+                    "${Input.Button[165]}":{"ignore":true}
+                }
+            }
+            <$$"]
+        }
+
+    
+    }
+
+    method Convert(jsonvalueref jo)
+    {
+        ; make sure it hasnt already been converted
+        if ${jo.Has[profiles]}
+            return
+
+        variable jsonvalue joHotkeys
+        variable jsonvalue joWrapper
+        joWrapper:SetValue["${jo.AsJSON~}"]
+        joHotkeys:SetValue["${jo.Get[hotkeys].AsJSON~}"]
+
+        if ${joHotkeys.Type.Equal[object]}
+        {
+            if ${joHotkeys.Has[toggleRoundRobin]}
+                joWrapper:Set["hotkey","${joHotkeys.Get[toggleRoundRobin].AsJSON~}"]
+        }
+
+        joWrapper:Erase[hotkeys]
+
+        jo:Clear
+        jo:Set["profiles","{\"original\":${joWrapper.AsJSON~}}"]
+
+;        Profiles:Set["original","${joWrapper.AsJSON~}"]
+
     }
 
     method Load()
@@ -35,26 +161,14 @@ objectdef brrSettings
             return
         }
 
-        if ${jo.Has[enable]}
-            Enable:Set["${jo.Get[enable]~}"]
-        if ${jo.Has[includeMouse]}
-            IncludeMouse:Set["${jo.Get[includeMouse]~}"]
-        if ${jo.Has[defaultAllow]}
-            DefaultAllow:Set["${jo.Get[defaultAllow]~}"]
-        if ${jo.Has[switchAsHotkey]}
-            SwitchAsHotkey:Set["${jo.Get[switchAsHotkey]~}"]
+        This:Convert[jo]
 
-        if ${jo.Has[overrides]}
-            Overrides:SetValue["${jo.Get[overrides].AsJSON~}"]
-
-        variable jsonvalue joHotkeys
-        joHotkeys:SetValue["${jo.Get[hotkeys].AsJSON~}"]
-
-        if ${joHotkeys.Type.Equal[object]}
+        if ${jo.Has[profiles]}
         {
-            if ${joHotkeys.Has[toggleRoundRobin]}
-                hotkeyToggleRoundRobin:SetValue["${joHotkeys.Get[toggleRoundRobin].AsJSON~}"]
+            Profiles:FromJSON["${jo.Get[profiles].AsJSON~}"]
+            Profiles:ForEach["ForEach.Value.Name:Set[\"\${ForEach.Key~}\"]"]
         }
+
     }
 
 
@@ -70,22 +184,32 @@ objectdef brrSettings
         variable jsonvalue jo
         jo:SetValue["$$>
         {
-            "enable":${Enable.AsJSON~},
-            "includeMouse":${IncludeMouse.AsJSON~},
-            "overrides":${Overrides.AsJSON~},
-            "defaultAllow":${DefaultAllow.AsJSON~},
-            "switchAsHotkey":${SwitchAsHotkey.AsJSON~},
-            "hotkeys":{
-                "toggleRoundRobin":${hotkeyToggleRoundRobin.AsJSON~}
-            }
+            "profiles":${Profiles.AsJSON~}
         }
         <$$"]
         return "${jo.AsJSON~}"
     }
 
-    variable bool Enable=FALSE
-    variable bool DefaultAllow=TRUE
-    variable bool SwitchAsHotkey=TRUE
-    variable bool IncludeMouse=FALSE
-    variable jsonvalue Overrides
+    method EnableHotkeys()
+    {
+        Profiles:ForEach["ForEach.Value:EnableHotkey"]
+    }
+
+    method DisableHotkeys()
+    {
+        Profiles:ForEach["ForEach.Value:DisableHotkey"]
+    }
+
+    method SetCurrentProfile(string newValue)
+    {        
+        CurrentProfile:SetReference["Profiles.Get[${newValue.AsJSON~}]"]
+    }
+
+    method ClearCurrentProfile()
+    {
+        CurrentProfile:SetReference[NULL]
+    }
+
+    variable collection:brrProfile Profiles
+    variable weakref CurrentProfile
 }

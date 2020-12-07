@@ -2,6 +2,11 @@
     "$schema": "http://www.lavishsoft.com/schema/lgui2Package.json",        
     "elements": [
         {
+            "type":"panel",
+            "visibility":"hidden",
+            "name":"basicRoundRobin.events"
+        },
+        {
             "type": "window",
             "name": "basicRoundRobin.window",
             "title": "Basic Round-Robin",
@@ -31,13 +36,35 @@
                         },
                         "children":[
                             {
-                                "type":"checkbox",
-                                "content":"Enable Round-Robin Mode",
-                                "checkedBinding":{
-                                    "pullFormat":"${BRRUplink.Settings.Enable}",
-                                    "pushFormat":["BRRUplink:SetEnable[\"","\"]"]
-                                }
-                            }
+                                "_dock":"top",
+                                "type":"textblock",
+                                "text":"Work in progress. :)",
+                            },
+                            {
+                                "type":"stackpanel",
+                                "_dock":"top",
+                                "visibility":"collapsed",
+                                "orientation":"horizontal",
+                                "children":[
+                                    "Toggle Hotkey:",
+                                    {
+                                        "name":"brr.hotkeyPicker",
+                                        "type":"inputpicker",
+                                        "minSize":[100,30],
+                                        "multipleControlMode":true,
+                                        "valueBinding":{
+                                            "pullFormat":"${BRRUplink.Settings.hotkeyToggleRoundRobin}",
+                                            "pushFormat":["BRRUplink:SetHotkey[\"","\"]"],
+                                            "pullOnce":true,
+                                            "pullHook":{
+                                                "elementName":"basicRoundRobin.events",
+                                                "flags":"global",
+                                                "event":"onHotkeyChanged"
+                                              }
+                                        }
+                                    }
+                                ]
+                            }                                   
                         ]
                     },
                     {

@@ -11,7 +11,7 @@
               "type":"textblock",
               "textBinding":{
                 "pullFormat":"${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[display_name]}",
-                "-pullReplaceNull":""
+                "pullReplaceNull":""
               }
             }
           }      
@@ -68,13 +68,16 @@
                                 "maxSize":[200,150],
                                 "itemsBinding": {
                                     "pullFormat": "${BasicLauncher.Games.AsJSON}",
-                                    "pullHook": {
+                                    "pullHook": {   
                                       "elementName": "BasicLauncher.events",
                                       "flags": "global",
                                       "event": "onGamesUpdated"
                                     }
                                   },
-                                "selectedItemBinding":"BasicLauncher.UseGame",
+                                "selectedItemBinding":{
+                                    "pullFormat":"${BasicLauncher.Settings.UseGame}",
+                                    "pushFormat":["BasicLauncher:SetGame[\"","\"]"]
+                                },
                                 "selectedItemBindingProperty":"display_name",
                                 "itemViewGenerators":{
                                     "default":{
@@ -93,7 +96,33 @@
                         "children":[
                             {
                                 "type":"textbox",
-                                "textBinding":"BasicLauncher.LaunchSlots",
+                                "name":"bl.launchSlots",
+                                "textBinding":{
+                                    "pullFormat":"${BasicLauncher.Settings.LaunchSlots}",
+                                    "pullOnce":true,
+                                    "pushFormat":["BasicLauncher:SetLaunchSlots[","]"],
+                                    "autoPush":false
+                                },
+                                "hooks":{
+                                    "onLostFocus":{
+                                        "flags":"self",
+                                        "event":"lostKeyboardFocus",
+                                        "eventHandler":{
+                                            "type":"forward",
+                                            "event":"pushTextBinding",
+                                            "flags":"self"
+                                        }
+                                    },
+                                    "onLostMouseFocus":{
+                                        "flags":"self",
+                                        "event":"lostMouseFocus",
+                                        "eventHandler":{
+                                            "type":"forward",
+                                            "event":"pushTextBinding",
+                                            "flags":"self"
+                                        }
+                                    }
+                                },
                                 "minSize":[30,0],
                                 "margin":[0,0,5,0]
                             },

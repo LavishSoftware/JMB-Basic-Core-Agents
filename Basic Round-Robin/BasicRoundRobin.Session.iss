@@ -4,65 +4,57 @@ objectdef brrSession
 {
     variable taskmanager TaskManager=${LMAC.NewTaskManager["brrSession"]}
     variable brrSettings Settings
-    variable bool Enabled
 
     method Initialize()
     {
         LGUI2:LoadPackageFile[BasicRoundRobin.Session.lgui2Package.json]
-        if ${Settings.Enable}
-            This:Enable
 
-        This:EnableHotkeys
+        This.Settings:EnableHotkeys
     }
 
     method Shutdown()
     {
         This:Disable
-        This:DisableHotkeys
+        This.Settings:DisableHotkeys
         TaskManager:Destroy
         LGUI2:UnloadPackageFile[BasicRoundRobin.Session.lgui2Package.json]
     }
-
-
-    method EnableHotkeys()
+    
+    member:uint GetNextSlot()
     {
-        variable jsonvalue joBinding
-        if ${Settings.hotkeyToggleRoundRobin.Type.Equal[object]} && ${Settings.hotkeyToggleRoundRobin.Has[controls]}
-        {
-            joBinding:SetValue["${Settings.hotkeyToggleRoundRobin.AsJSON~}"]
-            joBinding:Set[name,"\"brr.toggleRoundRobin\""]
-            joBinding:Set[eventHandler,"$$>
-            {
-                "type":"task",
-                "taskManager":"brrSession",
-                "task":{
-                    "type":"ls1.code",
-                    "start":"uplink BRRUplink:ToggleEnable"
-                }
-            }
-            <$$"]
+        variable uint Slot=${JMB.Slot}
+        if !${Slot}
+            return 0
 
-            LGUI2:AddBinding["${joBinding.AsJSON~}"]
-        }
+        Slot:Inc
+        if ${Slot}>${JMB.Slots.Used}
+            return 1
+
+        return ${Slot}
     }
 
-    method DisableHotkeys()
-    {
-        LGUI2:RemoveBinding["brr.toggleRoundRobin"]
-    }
     method NextWindow()
     {
-        BWLSession:NextWindow[${Settings.SwitchAsHotkey}]
-    }
+        variable uint nextSlot=${This.GetNextSlot}
+        if !${nextSlot}
+            return
+
+        if !${Display.Window.IsForeground}
+            return
+
+        uplink focus "jmb${nextSlot}"
+        if ${Settings.CurrentProfile.SwitchAsHotkey}
+            relay "jmb${nextSlot}" "Event[OnHotkeyFocused]:Execute"
+    }    
 
     method OnControlHook(string controlName)
     {
-        variable bool Advance=${Settings.DefaultAllow}
+        variable bool Advance=${Settings.CurrentProfile.DefaultAllow}
 
         ; check for overrides
 
         variable jsonvalueref Override
-        Override:SetReference["Settings.Overrides[${controlName.AsJSON~}]"]
+        Override:SetReference["Settings.CurrentProfile.Overrides[${controlName.AsJSON~}]"]
 
         if ${Override.Type.Equal[object]}
         {
@@ -95,20 +87,27 @@ objectdef brrSession
 
     method OnMouseButtonHook()
     {
-        if ${This.IncludeMouse}
+        if ${Settings.CurrentProfile.IncludeMouse}
             This:OnControlHook["${Context.Args[controlName]~}"]
     }
 
-    method Enable()
+    method Enable(string profile)
     {
+        Settings:SetCurrentProfile["${profile~}"]
+        LGUI2.Element[basicRoundRobin.allButtons]:Destroy
         LGUI2:LoadJSON["${LGUI2.Template[brr.allButtons].AsJSON~}"]
-        Enabled:Set[1]
     }
 
     method Disable()
     {
+        Settings:ClearCurrentProfile
         LGUI2.Element[basicRoundRobin.allButtons]:Destroy
-        Enabled:Set[0]
+    }
+
+    ; used by the GUI to indicate profile hotkey was pressed. pass to the uplink for processing
+    method ToggleProfile(string profile)
+    {
+        relay uplink "BRRUplink:ToggleProfile[${profile.AsJSON~}]"
     }
 }
 
