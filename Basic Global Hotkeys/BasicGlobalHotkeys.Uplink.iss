@@ -47,7 +47,7 @@ objectdef bghUplink
             }
             <$$"]
 
-            jo:WriteFile["${AgentFolder~}/bgh.Settings.json",TRUE]
+            jo:WriteFile["${AgentFolder~}/bgh.Settings.json",multiline]
         }
 
         if !${jo:ParseFile["${AgentFolder~}/bgh.Settings.json"](exists)} || !${jo.Type.Equal[object]}
