@@ -100,8 +100,6 @@ objectdef basiclauncher
         
         if ${ReplaceSlots}
             JMB:ClearSlots
-
-        This:InstallCharacters
         
         variable uint Slot
         variable uint NumAdded
