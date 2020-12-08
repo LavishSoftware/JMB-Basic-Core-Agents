@@ -11,7 +11,7 @@
 				},
 				"onAgentShutdown": {
 					"code": [
-						"endscript BasicWHighlighter.Session"
+						"endscript BasicHighlighter.Session"
 					]
 				}
 			}
