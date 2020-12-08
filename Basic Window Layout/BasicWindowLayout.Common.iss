@@ -409,7 +409,10 @@ objectdef bwlCustomWindowLayout
 
                 if ${smallWidth} && ${smallHeight}
                 {
-                    relay jmb${slotID} "WindowCharacteristics -stealth -pos -viewable ${smallX},${smallY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
+                    if ${smallWidth}==${mainWidth} && ${smallHeight}==${mainHeight}
+                        relay jmb${slotID} "WindowCharacteristics -pos -viewable ${smallX},${smallY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
+                    else
+                        relay jmb${slotID} "WindowCharacteristics -stealth -pos -viewable ${smallX},${smallY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
                 }
 
                 numSmallRegion:Inc
