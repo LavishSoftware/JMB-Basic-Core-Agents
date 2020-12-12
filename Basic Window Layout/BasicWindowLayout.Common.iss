@@ -180,6 +180,7 @@ objectdef bwlSettings
         ]
     }
     <$$"
+        
 }
 
 ; base class for window layouts
