@@ -4,6 +4,11 @@ objectdef bwlSession
 {
     variable taskmanager TaskManager=${LMAC.NewTaskManager["bwlSession"]}
     variable bwlSettings Settings
+
+    variable bwlHorizontalLayout HorizontalLayout
+    variable bwlVerticalLayout VerticalLayout
+    variable bwlTwoMonitorLayout TwoMonitorLayout
+    variable bwlCustomWindowLayout CustomLayout
     variable weakref CurrentLayout
 
     variable bool Applied
@@ -45,6 +50,9 @@ objectdef bwlSession
             case Vertical
                 CurrentLayout:SetReference["VerticalLayout"]
                 break
+            case TwoMonitor
+                CurrentLayout:SetReference["TwoMonitorLayout"]
+                break                
             case Custom
                 CurrentLayout:SetReference["CustomLayout"]
                 break

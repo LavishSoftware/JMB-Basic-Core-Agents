@@ -3,11 +3,11 @@
 objectdef bwlUplink
 {
     variable bwlSettings Settings
-    variable jsonvalue Layouts="[]"
+    ; testing
+    variable bwlTwoMonitorLayout TwoMonitorLayout
 
     method Initialize()
     {
-        This:RefreshLayouts
         LGUI2:LoadPackageFile[BasicWindowLayout.Uplink.lgui2Package.json]
         Settings:Store
     }
@@ -99,10 +99,6 @@ objectdef bwlUplink
 
     method SelectLayout(string newValue)
     {
-        echo "Changing layout"
-        echo "old ${Settings.UseLayout~}"
-        echo "new ${newValue~}"
-        
         if ${newValue.Equal["${Settings.UseLayout~}"]}
             return
 
@@ -116,26 +112,31 @@ objectdef bwlUplink
     {
         relay jmb1 "BWLSession:ApplyWindowLayout"
     }
-    method GenerateItemView_Layout()
-	{
-       ; echo GenerateItemView_Game ${Context(type)} ${Context.Args}
 
-		; build an itemview lgui2element json
-		variable jsonvalue joListBoxItem
-		joListBoxItem:SetValue["${LGUI2.Template["BasicWindowLayout.layoutView"].AsJSON~}"]
-        		
-		Context:SetView["${joListBoxItem.AsJSON~}"]
-	}
-    method RefreshLayouts()
+    method ActivateHorizontal()
     {
-        variable jsonvalue jo="[]"
-        jo:Add["{"display_name": "Horizontal"}"]
-        jo:Add["{"display_name": "Vertical"}"]       
-        jo:Add["{"display_name": "Custom"}"]
-        
-        Layouts:SetValue["${jo.AsJSON~}"]
-        LGUI2.Element[BWLUplink.events]:FireEventHandler[onLayoutsUpdated]
+        This:SelectLayout["Horizontal"]
+        This:ApplyWindowLayout
     }
+   
+    method ActivateVertical()
+    {
+        This:SelectLayout["Vertical"]
+        This:ApplyWindowLayout
+    }
+   
+    method ActivateTwoMonitor()
+    {
+        This:SelectLayout["TwoMonitor"]
+        This:ApplyWindowLayout
+    }
+   
+    method ActivateCustom()
+    {
+        This:SelectLayout["Custom"]
+        This:ApplyWindowLayout
+    } 
+
 }
 
 variable(global) bwlUplink BWLUplink

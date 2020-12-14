@@ -138,6 +138,10 @@ objectdef basiclauncher
     {
         relay all "LGUI2.Element[consoleWindow]:SetVisibility[Visible]"
     }
+    method HideConsoles()
+    {
+        relay all "LGUI2.Element[consoleWindow]:SetVisibility[Hidden]"
+    }
 
     method CloseAll()
     {
