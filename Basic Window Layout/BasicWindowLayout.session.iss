@@ -51,7 +51,8 @@ objectdef bwlSession
                 CurrentLayout:SetReference["VerticalLayout"]
                 break
             case TwoMonitor
-                CurrentLayout:SetReference["TwoMonitorLayout"]
+                if ${Display.Monitor[2](exists)}            
+                    CurrentLayout:SetReference["TwoMonitorLayout"]
                 break                
             case Custom
                 CurrentLayout:SetReference["CustomLayout"]

@@ -389,7 +389,8 @@ objectdef bwlTwoMonitorLayout
         variable uint smallColumns=2
         variable uint smallRows
 
-        if ${BWLSession.Settings.TwoMonitorColumns}
+        ; If there is only 1 column, everything will be stacked.  Make at least 2 columns.
+        if ${BWLSession.Settings.TwoMonitorColumns}>1
             smallColumns:Set["${BWLSession.Settings.TwoMonitorColumns}"]
 
         if ${BWLSession.Settings.AvoidTaskbar}
