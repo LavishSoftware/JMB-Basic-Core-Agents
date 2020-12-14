@@ -137,7 +137,7 @@ objectdef bwlSettings
     variable bool FocusFollowsMouse=FALSE    
     variable bool AvoidTaskbar=FALSE
     variable string UseLayout="Horizontal"
-    variable uint TwoMonitorColumns=3
+    variable uint TwoMonitorColumns=2
 
     variable jsonvalue CustomLayout="$$>
     {
@@ -405,7 +405,7 @@ objectdef bwlTwoMonitorLayout
             monitorTwoHeight:Set["${Display.Monitor[2].MaximizeHeight}"]
         }
 
-        ; if there's only 1 window, just go full screen windowed on Monitor One
+        ; If there's only 1 window, just go full screen windowed on Monitor One
         if ${numSmallRegions}==1
         {
             WindowCharacteristics -pos -viewable ${monitorOneX},${monitorOneY} -size -viewable ${monitorOneWidth}x${monitorOneHeight} -frame none
@@ -413,7 +413,7 @@ objectdef bwlTwoMonitorLayout
             return
         }
 
-        ; if there's only 2 windows, go full screen on each Monitor
+        ; If there's only 2 windows, go full screen on each Monitor
         if ${numSmallRegions}==2
         {
             WindowCharacteristics -pos -viewable ${monitorOneX},${monitorOneY} -size -viewable ${monitorOneWidth}x${monitorOneHeight} -frame none
@@ -475,9 +475,6 @@ objectdef bwlTwoMonitorLayout
 
                 useX:Set["${monitorTwoX}+(${smallWidth}*${useColumn})"]
                 useY:Set["${monitorTwoY}+(${smallHeight}*${useRow})"]
-
-                echo "[DEBUG] JMB SlotID: ${JMB.Slot} numSlot: ${numSlot} slotID: ${slotID}"
-                echo "[DEBUG] Columns: ${smallColumns} Rows: ${smallRows} Position: ${useRow},${useColumn} | ${useX},${useY} Size: ${smallWidth}x${smallHeight}"
 
                 relay jmb${slotID} "WindowCharacteristics -stealth -pos -viewable ${useX},${useY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
             }
