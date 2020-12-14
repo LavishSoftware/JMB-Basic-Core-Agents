@@ -157,8 +157,8 @@
                                 "method":"CloseAll"
                             }
                         }
-                    },        
-                    { 
+                    },
+                    {
                         "type":"expander",
                         "margin":5,
                         "header":"More ...",

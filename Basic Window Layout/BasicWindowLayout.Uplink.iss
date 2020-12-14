@@ -3,8 +3,6 @@
 objectdef bwlUplink
 {
     variable bwlSettings Settings
-    ; testing
-    variable bwlTwoMonitorLayout TwoMonitorLayout
 
     method Initialize()
     {
@@ -112,6 +110,8 @@ objectdef bwlUplink
     {
         relay jmb1 "BWLSession:ApplyWindowLayout"
     }
+
+    ;Active funtions (Not DRY) - TODO: Roll the Activate functions into a single function with parameters. 
 
     method ActivateHorizontal()
     {
