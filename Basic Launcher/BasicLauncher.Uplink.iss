@@ -77,20 +77,6 @@ objectdef basiclauncher
     {
         variable string UseGameProfile="${Settings.UseGame~} Default Profile"
 
-        variable jsonvalue jaVirtualFiles="[]"
-        jaVirtualFiles:Add["$$>
-            {
-                "pattern":"*/Config.WTF",
-                "replacement":"{1}/Config.Generic.JMB${Slot}.WTF"
-            }
-        <$$"]
-        jaVirtualFiles:Add["$$>
-            {
-                "pattern":"Software/Blizzard Entertainment/World of Warcraft/Client/*",
-                "replacement":"Software/Blizzard Entertainment/World of Warcraft/Client-JMB${Slot}/*"
-            }
-        <$$"]
-
         variable jsonvalue jo
         jo:SetValue["$$>
         {
@@ -98,7 +84,16 @@ objectdef basiclauncher
             "display_name":"Generic Character",
             "game":${Settings.UseGame.AsJSON~},
             "gameProfile":${UseGameProfile.AsJSON~}
-            "virtualFiles":${jaVirtualFiles.AsJSON~}
+            "virtualFiles":[
+                {
+                    "pattern":"*/Config.WTF",
+                    "replacement":"{1}/Config.Generic.JMB${Slot}.WTF"
+                },
+                {
+                    "pattern":"Software/Blizzard Entertainment/World of Warcraft/Client/\*",
+                    "replacement":"Software/Blizzard Entertainment/World of Warcraft/Client-JMB${Slot}/\*"
+                }
+            ]
         }
         <$$"]
         JMB:AddCharacter["${jo.AsJSON~}"]
