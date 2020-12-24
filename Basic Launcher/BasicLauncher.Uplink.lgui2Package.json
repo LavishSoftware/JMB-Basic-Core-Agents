@@ -129,7 +129,6 @@
                             { 
                                 "type":"button",
                                 "jsonTemplate":"bl.button",
-                                "_dock":"bottom",
                                 "horizontalAlignment":"center",
                                 "content":"🚀 Launch",
                                 "font":{
@@ -146,18 +145,37 @@
                         ]
                     },
                     {
-                        "type":"button",
-                        "jsonTemplate":"bl.button",
-                        "content":"Close All",
-                        "margin":[5,15,5,0],
-                        "eventHandlers":{
-                            "onPress":{
-                                "type":"method",
-                                "object":"BasicLauncher",
-                                "method":"CloseAll"
+                        "type":"stackpanel",
+                        "orientation":"horizontal",
+                        "margin":[0,15,0,0],
+                        "children":[
+                            {
+                                "type":"button",
+                                "content":"Re-launch Missing",
+                                "eventHandlers":{
+                                    "onPress":{
+                                        "type":"method",
+                                        "object":"BasicLauncher",
+                                        "method":"RelaunchMissingSlots"
+                                    }
+                                }
+                            },
+                            {
+                                "type":"button",
+                                "jsonTemplate":"bl.button",
+                                "content":"Close All",
+                                "margin":[5,0,0,0],
+                                "eventHandlers":{
+                                    "onPress":{
+                                        "type":"method",
+                                        "object":"BasicLauncher",
+                                        "method":"CloseAll"
+                                    }
+                                }
                             }
-                        }
+                        ]
                     },
+
                     {
                         "type":"expander",
                         "margin":5,

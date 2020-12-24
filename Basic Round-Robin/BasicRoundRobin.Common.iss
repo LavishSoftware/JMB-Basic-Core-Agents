@@ -4,8 +4,8 @@ objectdef brrProfile
     variable bool DefaultAllow=TRUE
     variable bool SwitchAsHotkey=TRUE
     variable bool IncludeMouse=FALSE
-    variable jsonvalue Overrides
-    variable jsonvalue Hotkey
+    variable jsonvalue Overrides="{}"
+    variable jsonvalue Hotkey="{}"
     
     variable bool Enabled
 
@@ -38,11 +38,26 @@ objectdef brrProfile
             Hotkey:SetValue["${jo.Get[hotkey].AsJSON~}"]
     }
 
+    member OverridesList()
+    {
+;        echo OverridesList...
+        variable jsonvalue jo="${Overrides.AsJSON~}"
+        variable jsonvalue ja="[]"
+
+        if !${jo.Type.Equal[object]}
+            return "[]"
+
+        jo:ForEach["ForEach.Value:Set[key,\"\${ForEach.Key.AsJSON~}\"]"]
+        jo:ForEach["ja:Add[\"\${ForEach.Value.AsJSON~}\"]"]
+        return "${ja.AsJSON~}"
+    }
+
     member AsJSON()
     {
         variable jsonvalue jo
         jo:SetValue["$$>
         {
+            "name":${Name.AsJSON~},
             "includeMouse":${IncludeMouse.AsJSON~},
             "overrides":${Overrides.AsJSON~},
             "defaultAllow":${DefaultAllow.AsJSON~},
@@ -50,6 +65,11 @@ objectdef brrProfile
             "hotkey":${Hotkey.AsJSON~}
         }
         <$$"]
+
+        if ${jo.Get[overrides].Type.Equal[null]}
+            jo:Erase[overrides]
+        if ${jo.Get[hotkey].Type.Equal[null]}
+            jo:Erase[hotkey]
         return "${jo.AsJSON~}"
     }
 
@@ -91,8 +111,6 @@ objectdef brrProfile
 objectdef brrSettings
 {
     variable filepath AgentFolder="${Script.CurrentDirectory}"
-    
-
 
     method Initialize()
     {       
@@ -102,6 +120,7 @@ objectdef brrSettings
         {
             Profiles:Set[default,"$$>
             {
+                "name":"default",
                 "defaultAllow":true,
                 "includeMouse":false,
                 "switchAsHotkey":true,
@@ -119,6 +138,7 @@ objectdef brrSettings
                 }
             }
             <$$"]
+            LGUI2.Element[basicRoundRobin.events]:FireEventHandler[onCurrentProfileChanged]
         }
 
     
@@ -162,11 +182,13 @@ objectdef brrSettings
         }
 
         This:Convert[jo]
+        Profiles:Clear
 
         if ${jo.Has[profiles]}
         {
             Profiles:FromJSON["${jo.Get[profiles].AsJSON~}"]
             Profiles:ForEach["ForEach.Value.Name:Set[\"\${ForEach.Key~}\"]"]
+            LGUI2.Element[basicRoundRobin.events]:FireEventHandler[onProfilesUpdated]
         }
 
     }
@@ -203,11 +225,13 @@ objectdef brrSettings
     method SetCurrentProfile(string newValue)
     {        
         CurrentProfile:SetReference["Profiles.Get[${newValue.AsJSON~}]"]
+        LGUI2.Element[basicRoundRobin.events]:FireEventHandler[onCurrentProfileChanged]
     }
 
     method ClearCurrentProfile()
     {
         CurrentProfile:SetReference[NULL]
+        LGUI2.Element[basicRoundRobin.events]:FireEventHandler[onCurrentProfileChanged]
     }
 
     variable collection:brrProfile Profiles
