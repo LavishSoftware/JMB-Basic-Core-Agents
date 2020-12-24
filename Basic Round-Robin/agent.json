@@ -1,6 +1,8 @@
 {
 	"$schema": "http://www.lavishsoft.com/schema/agent.json",
 	"name": "Basic Round-Robin",
+	"minimumBuild":6772,
+	"description": "Round-Robin Mode switches windows after you press buttons",
 	"platforms": {
 		"joe multiboxer uplink": {
 			"eventHandlers": {
