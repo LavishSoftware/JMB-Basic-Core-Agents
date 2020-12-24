@@ -91,7 +91,7 @@ objectdef basiclauncher
                 },
                 {
                     "pattern":"Software/Blizzard Entertainment/World of Warcraft/Client/\*",
-                    "replacement":"Software/Blizzard Entertainment/World of Warcraft/Client-JMB${Slot}/\*"
+                    "replacement":"Software/Blizzard Entertainment/World of Warcraft/Client-JMB${Slot}/{1}"
                 }
             ]
         }
