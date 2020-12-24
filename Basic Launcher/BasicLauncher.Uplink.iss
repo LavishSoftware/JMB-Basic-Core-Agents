@@ -87,6 +87,10 @@ objectdef basiclauncher
                 {
                     "pattern":"*/Config.WTF",
                     "replacement":"{1}/Config.Generic.JMB${Slot}.WTF"
+                },
+                {
+                    "pattern":"Software/Blizzard Entertainment/World of Warcraft/Client/*",
+                    "replacement":"Software/Blizzard Entertainment/World of Warcraft/Client-JMB${Slot}/*"
                 }
             ]
         }
@@ -98,9 +102,13 @@ objectdef basiclauncher
     {
         LGUI2.Element[bl.launchSlots]:PushTextBinding
         
+
         if ${ReplaceSlots}
+        {
+            JMB.Slots:ForEach["kill jmb\${ForEach.Value.Get[id]}"]
             JMB:ClearSlots
-        
+        }
+
         variable uint Slot
         variable uint NumAdded
         for (NumAdded:Set[1] ; ${NumAdded}<=${Settings.LaunchSlots} ; NumAdded:Inc)
@@ -111,6 +119,18 @@ objectdef basiclauncher
             JMB.Slot[${Slot}]:Launch
         }
     }
+
+    method Relaunch(uint numSlot)
+    {
+        if !${JMB.Slot[${numSlot}].ProcessID}
+            JMB.Slot[${numSlot}]:Launch
+    }
+    
+    method RelaunchMissingSlots()
+    {
+        JMB.Slots:ForEach["This:Relaunch[\${ForEach.Value.Get[id]}]"]
+    }
+
 
     method SetGame(string newValue)
     {
