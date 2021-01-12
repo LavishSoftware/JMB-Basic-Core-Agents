@@ -204,6 +204,39 @@
                                     }
                                 },
                                 {
+                                    "type":"stackpanel",
+                                    "margin":[5,0,5,0],
+                                    "orientation":"horizontal",                        
+                                    "children":[
+                                        {
+                                            "type":"button",
+                                            "jsonTemplate":"bl.button",
+                                            "content":"Show Consoles",
+                                            "margin":[5,5,1,0],
+                                            "eventHandlers":{
+                                                "onPress":{
+                                                    "type":"method",
+                                                    "object":"BasicLauncher",
+                                                    "method":"ShowConsoles"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type":"button",
+                                            "jsonTemplate":"bl.button",
+                                            "content":"Hide Consoles",
+                                            "margin":[1,5,5,0],
+                                            "eventHandlers":{
+                                                "onPress":{
+                                                    "type":"method",
+                                                    "object":"BasicLauncher",
+                                                    "method":"HideConsoles"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
                                     "type":"button",
                                     "jsonTemplate":"bl.button",
                                     "content":"Reload Basic Launcher",

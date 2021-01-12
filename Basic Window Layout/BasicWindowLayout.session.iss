@@ -7,6 +7,7 @@ objectdef bwlSession
 
     variable bwlHorizontalLayout HorizontalLayout
     variable bwlVerticalLayout VerticalLayout
+    variable bwlTwoMonitorLayout TwoMonitorLayout
     variable bwlCustomWindowLayout CustomLayout
     variable weakref CurrentLayout
 
@@ -49,6 +50,10 @@ objectdef bwlSession
             case Vertical
                 CurrentLayout:SetReference["VerticalLayout"]
                 break
+            case TwoMonitor
+                if ${Display.Monitor[2](exists)}            
+                    CurrentLayout:SetReference["TwoMonitorLayout"]
+                break                
             case Custom
                 CurrentLayout:SetReference["CustomLayout"]
                 break

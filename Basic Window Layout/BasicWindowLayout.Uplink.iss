@@ -110,6 +110,33 @@ objectdef bwlUplink
     {
         relay jmb1 "BWLSession:ApplyWindowLayout"
     }
+
+    ;Active funtions (Not DRY) - TODO: Roll the Activate functions into a single function with parameters. 
+
+    method ActivateHorizontal()
+    {
+        This:SelectLayout["Horizontal"]
+        This:ApplyWindowLayout
+    }
+   
+    method ActivateVertical()
+    {
+        This:SelectLayout["Vertical"]
+        This:ApplyWindowLayout
+    }
+   
+    method ActivateTwoMonitor()
+    {
+        This:SelectLayout["TwoMonitor"]
+        This:ApplyWindowLayout
+    }
+   
+    method ActivateCustom()
+    {
+        This:SelectLayout["Custom"]
+        This:ApplyWindowLayout
+    } 
+
 }
 
 variable(global) bwlUplink BWLUplink

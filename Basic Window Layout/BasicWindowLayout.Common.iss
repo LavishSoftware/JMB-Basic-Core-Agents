@@ -137,6 +137,7 @@ objectdef bwlSettings
     variable bool FocusFollowsMouse=FALSE    
     variable bool AvoidTaskbar=FALSE
     variable string UseLayout="Horizontal"
+    variable uint TwoMonitorColumns=2
 
     variable jsonvalue CustomLayout="$$>
     {
@@ -355,6 +356,129 @@ objectdef bwlVerticalLayout
                     useY:Inc["${smallHeight}"]
             }
             
+        }
+    }
+}
+
+objectdef bwlTwoMonitorLayout
+{   
+    member ToText()
+    {
+        return "TwoMonitor"   
+    }
+
+    method ApplyWindowLayout(bool setOtherSlots=TRUE)
+    {
+        variable jsonvalueref Slots="JMB.Slots"
+
+        variable uint monitorOneWidth=${Display.Monitor[1].Width}
+        variable uint monitorOneHeight=${Display.Monitor[1].Height}
+        variable int monitorOneX=${Display.Monitor[1].Left}
+        variable int monitorOneY=${Display.Monitor[1].Top}
+        
+        variable uint monitorTwoWidth=${Display.Monitor[2].Width}
+        variable uint monitorTwoHeight=${Display.Monitor[2].Height}
+        variable int monitorTwoX=${Display.Monitor[2].Left}
+        variable int monitorTwoY=${Display.Monitor[2].Top}
+
+        variable uint mainHeight
+        variable uint numSmallRegions=${Slots.Used}
+        variable uint mainWidth
+        variable uint smallHeight
+        variable uint smallWidth
+        variable uint smallColumns=2
+        variable uint smallRows
+
+        ; If there is only 1 column, everything will be stacked.  Make at least 2 columns.
+        if ${BWLSession.Settings.TwoMonitorColumns}>1
+            smallColumns:Set["${BWLSession.Settings.TwoMonitorColumns}"]
+
+        if ${BWLSession.Settings.AvoidTaskbar}
+        {
+            monitorOneX:Set["${Display.Monitor[1].MaximizeLeft}"]
+            monitorOneY:Set["${Display.Monitor[1].MaximizeTop}"]
+            monitorOneWidth:Set["${Display.Monitor[1].MaximizeWidth}"]
+            monitorOneHeight:Set["${Display.Monitor[1].MaximizeHeight}"]
+
+            monitorTwoX:Set["${Display.Monitor[2].MaximizeLeft}"]
+            monitorTwoY:Set["${Display.Monitor[2].MaximizeTop}"]
+            monitorTwoWidth:Set["${Display.Monitor[2].MaximizeWidth}"]
+            monitorTwoHeight:Set["${Display.Monitor[2].MaximizeHeight}"]
+        }
+
+        ; If there's only 1 window, just go full screen windowed on Monitor One
+        if ${numSmallRegions}==1
+        {
+            WindowCharacteristics -pos -viewable ${monitorOneX},${monitorOneY} -size -viewable ${monitorOneWidth}x${monitorOneHeight} -frame none
+            BWLSession.Applied:Set[1]
+            return
+        }
+
+        ; If there's only 2 windows, go full screen on each Monitor
+        if ${numSmallRegions}==2
+        {
+            WindowCharacteristics -pos -viewable ${monitorOneX},${monitorOneY} -size -viewable ${monitorOneWidth}x${monitorOneHeight} -frame none
+            relay jmb2 "WindowCharacteristics -stealth -pos -viewable ${monitorTwoX},${monitorTwoY} -size -viewable ${monitorTwoWidth}x${monitorTwoHeight} -frame none"
+            BWLSession.Applied:Set[1]
+            return
+        }
+
+        if !${BWLSession.Settings.LeaveHole}
+            numSmallRegions:Dec
+
+        mainHeight:Set["${monitorOneHeight}"]
+        mainWidth:Set["${monitorOneWidth}"]
+
+        if ${numSmallRegions}%${smallColumns}==0
+        {
+            smallRows:Set["${numSmallRegions}/${smallColumns}"]
+        }
+        else
+        {
+            ; Move the numerator up to the next value that divides evenly by small columns
+            smallRows:Set["(${numSmallRegions}+(${smallColumns}-(${numSmallRegions}%${smallColumns})))/${smallColumns}"]
+        }
+        
+        ; If there is only 1 row, everything will be stretched side by side.  Make at least 2 rows.
+        if ${smallRows}==1
+            smallRows:Set["2"]
+
+        smallWidth:Set["${monitorTwoWidth}/${smallColumns}"]
+        smallHeight:Set["${monitorTwoHeight}/${smallRows}"]
+
+        WindowCharacteristics -pos -viewable ${monitorOneX},${monitorOneY} -size -viewable ${mainWidth}x${mainHeight} -frame none
+        BWLSession.Applied:Set[1]
+
+        if !${setOtherSlots}
+            return
+
+        variable int useX
+        variable int useY
+        variable int useRow
+        variable int useColumn
+        variable uint numSlot
+        variable uint slotID
+        variable uint posID
+
+        for (numSlot:Set[1] ; ${numSlot}<=${Slots.Used} ; numSlot:Inc)
+        {
+            slotID:Set["${Slots[${numSlot}].Get[id]~}"]
+            posID:Set["${slotID}"]
+
+            if ${slotID}!=${JMB.Slot}
+            {
+                if !${BWLSession.Settings.LeaveHole}  && ${slotID}>${JMB.Slot}
+                    posID:Set["${posID}-1"]
+
+                ;Leveraging INT typecasting to find Row/Column.  Quotient is used for Row, Modulo is used for Column
+                useRow:Set["(${posID}-1)/${smallColumns}"]
+                useColumn:Set["(${posID}-1)%${smallColumns}"]
+
+                useX:Set["${monitorTwoX}+(${smallWidth}*${useColumn})"]
+                useY:Set["${monitorTwoY}+(${smallHeight}*${useRow})"]
+
+                relay jmb${slotID} "WindowCharacteristics -stealth -pos -viewable ${useX},${useY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
+            }
         }
     }
 }

@@ -73,8 +73,67 @@
                         ]
                     },
                     {
+                        "type":"stackpanel",
+                        "margin":[5,0,5,0],
+                        "orientation":"horizontal",                        
+                        "children":[
+                            {
+                                "type":"button",
+                                "jsonTemplate":"bl.button",
+                                "content":"Horizontal",
+                                "margin":[5,5,1,0],
+                                "eventHandlers":{
+                                    "onPress":{
+                                        "type":"method",
+                                        "object":"BWLUplink",
+                                        "method":"ActivateHorizontal"
+                                    }
+                                }
+                            },
+                            {
+                                "type":"button",
+                                "jsonTemplate":"bl.button",
+                                "content":"Vertical",
+                                "margin":[1,5,1,0],
+                                "eventHandlers":{
+                                    "onPress":{
+                                        "type":"method",
+                                        "object":"BWLUplink",
+                                        "method":"ActivateVertical"
+                                    }
+                                }
+                            },
+                            {
+                                "type":"button",
+                                "jsonTemplate":"bl.button",
+                                "content":"Two Monitor",
+                                "margin":[1,5,1,0],
+                                "eventHandlers":{
+                                    "onPress":{
+                                        "type":"method",
+                                        "object":"BWLUplink",
+                                        "method":"ActivateTwoMonitor"
+                                    }
+                                }
+                            },
+                            {
+                                "type":"button",
+                                "jsonTemplate":"bl.button",
+                                "content":"Custom",
+                                "margin":[1,5,5,0],
+                                "eventHandlers":{
+                                    "onPress":{
+                                        "type":"method",
+                                        "object":"BWLUplink",
+                                        "method":"ActivateCustom"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
                         "type":"button",
-                        "content":"Apply Window Layout",
+                        "content":"Refresh Layout",
                         "margin":[5,5,5,0],
                         "eventHandlers":{
                             "onPress":{
