@@ -43,7 +43,7 @@ objectdef basiclauncherSettings
         jo:SetValue["$$>
         {
             "launchSlots":${LaunchSlots.AsJSON~},
-            "useGame":${UseGame.AsJSON~},
+            "useGame":${UseGame.AsJSON~}
         }
         <$$"]
         return "${jo.AsJSON~}"
