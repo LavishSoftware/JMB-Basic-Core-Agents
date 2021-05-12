@@ -3,9 +3,23 @@
 objectdef bwlUplink
 {
     variable bwlSettings Settings
+    variable jsonvalue Layouts="$$>{
+            "Vertical":{
+                "name":"Vertical"                
+            },
+            "Horizontal":{
+                "name":"Horizontal"
+            },
+            "Custom":{
+                "name":"Custom"
+            }
+        }<$$"
 
     method Initialize()
     {
+        LavishScript:RegisterEvent[JMB_OnSlotsUpdated]
+
+        Event[JMB_OnSlotsUpdated]:AttachAtom[This:OnSlotsUpdated]
         LGUI2:LoadPackageFile[BasicWindowLayout.Uplink.lgui2Package.json]
         Settings:Store
     }
@@ -63,6 +77,17 @@ objectdef bwlUplink
         relay all "BWLSession.Settings.SwapOnActivate:Set[${newValue}]"
     }
 
+    method SetRescaleWindows(bool newValue)
+    {
+        if ${newValue}==${Settings.RescaleWindows}
+            return
+        Settings.RescaleWindows:Set[${newValue}]
+        Settings:Store
+
+        ; push updated setting
+        relay all "BWLSession.Settings.RescaleWindows:Set[${newValue}]"
+    }
+
     method ToggleSwapOnHotkeyFocused()
     {
         This:SetSwapOnHotkeyFocused[${Settings.SwapOnHotkeyFocused.Not}]
@@ -108,8 +133,24 @@ objectdef bwlUplink
 
     method ApplyWindowLayout()
     {
-        relay jmb1 "BWLSession:ApplyWindowLayout"
+        relay foreground "BWLSession:ApplyWindowLayout"
     }
+
+    method OnSlotsUpdated()
+    {
+        This:ApplyWindowLayout
+    }
+
+    method GenerateItemView_Layout()
+	{
+      ;  echo GenerateItemView_Layout ${Context(type)} ${Context.Args}
+
+		; build an itemview lgui2element json
+		variable jsonvalue joListBoxItem
+		joListBoxItem:SetValue["${LGUI2.Template["basicWindowLayout.layoutView"].AsJSON~}"]
+        		
+		Context:SetView["${joListBoxItem.AsJSON~}"]
+	}
 }
 
 variable(global) bwlUplink BWLUplink

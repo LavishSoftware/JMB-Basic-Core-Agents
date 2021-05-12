@@ -1,10 +1,29 @@
 {
-    "$schema": "http://www.lavishsoft.com/schema/lgui2Package.json",    
+    "$schema": "http://www.lavishsoft.com/schema/lgui2Package.json",
+    "templates":{
+        "basicWindowLayout.layoutView":{
+            "jsonTemplate":"listboxitem",
+            "padding":2,
+            "content":{
+                "type":"textblock",
+                "textBinding":{
+                "pullFormat":"${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[name]}",
+                "pullReplaceNull":""
+                }
+            }
+        }
+    }, 
     "elements": [
+        {
+            "type":"panel",
+            "visibility":"hidden",
+            "name":"basicWindowLayout.events"
+        },
         {
             "type": "window",
             "name": "basicWindowLayout.window",
             "title": "Basic Window Layout",
+            "width":500,
             "content":{
                 "type":"stackpanel",
                 "backgroundBrush":{
@@ -56,6 +75,14 @@
                             },
                             {
                                 "type":"checkbox",
+                                "content":"Rescale windows from main size (keeps original resolution)",
+                                "checkedBinding":{
+                                    "pullFormat":"${BWLUplink.Settings.RescaleWindows}",
+                                    "pushFormat":["BWLUplink:SetRescaleWindows[\"","\"]"]
+                                }
+                            },
+                            {
+                                "type":"checkbox",
                                 "content":"Avoid Windows Taskbar area",
                                 "checkedBinding":{
                                     "pullFormat":"${BWLUplink.Settings.AvoidTaskbar}",
@@ -69,6 +96,39 @@
                                     "pullFormat":"${BWLUplink.Settings.LeaveHole}",
                                     "pushFormat":["BWLUplink:SetLeaveHole[\"","\"]"]
                                 }
+                            },
+                            {
+                                "type":"stackpanel",
+                                "orientation":"horizontal",
+                                "children":[
+                                    {
+                                        "type":"textblock",
+                                        "text":"Active Layout: "
+                                    },
+                                    {
+                                        "type":"combobox",
+                                        "horizontalAlignment":"stretch",
+                                        "itemsBinding":{
+                                            "pullFormat":"${BWLUplink.Layouts.Values.AsJSON}",
+                                            "pullHook": {   
+                                                "elementName": "basicWindowLayout.events",
+                                                "flags": "global",
+                                                "event": "onLayoutsUpdated"
+                                            }
+                                        },
+                                        "selectedItemBinding":{
+                                            "pullFormat":"${BWLUplink.Settings.UseLayout}",
+                                            "pushFormat":["BWLUplink:SelectLayout[\"","\"]"]
+                                        },
+                                        "itemViewGenerators":{
+                                            "default":{
+                                                "type":"method",
+                                                "object":"BWLUplink",
+                                                "method":"GenerateItemView_Layout"
+                                            }
+                                        }
+                                    }    
+                                ]
                             }
                         ]
                     },

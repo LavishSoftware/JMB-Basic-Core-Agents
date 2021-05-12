@@ -39,9 +39,9 @@ objectdef bwlSettings
     }
     <$$"
 
-
     method Initialize()
     {
+        BWLSettings:SetReference[This]
         This:Load
     }
 
@@ -72,11 +72,17 @@ objectdef bwlSettings
         if ${jo.Has[avoidTaskbar]}
             AvoidTaskbar:Set["${jo.Get[avoidTaskbar]~}"]
 
+        if ${jo.Has[rescaleWindows]}
+            RescaleWindows:Set["${jo.Get[rescaleWindows]~}"]
+
         if ${jo.Has[useLayout]}
             UseLayout:Set["${jo.Get[useLayout]~}"]
 
         if ${jo.Has[customLayout]}
             CustomLayout:SetValue["${jo.Get[customLayout].AsJSON~}"]
+
+        if ${jo.Has[useMonitors]}
+            UseMonitors:SetValue["${jo.Get[useMonitors].AsJSON~}"]
 
         variable jsonvalue joHotkeys
         joHotkeys:SetValue["${jo.Get[hotkeys].AsJSON~}"]
@@ -98,6 +104,23 @@ objectdef bwlSettings
         }
     }
 
+    member:weakref GetMonitor(uint num)
+    {
+        if !${UseMonitors.Type.Equal[array]}
+            return ${num}
+
+        if ${UseMonitors.Used}<${num}
+            return ${num}
+
+        return "Display.Monitor[${UseMonitors.Get[${num}]}]"
+    }
+
+    member:string StealthFlag()
+    {
+        if ${RescaleWindows}
+            return "-stealth "
+        return ""
+    }
 
     method Store()
     {
@@ -116,6 +139,7 @@ objectdef bwlSettings
             "leaveHole":${LeaveHole.AsJSON~},
             "focusFollowsMouse":${FocusFollowsMouse.AsJSON~},
             "avoidTaskbar":${AvoidTaskbar.AsJSON~},
+            "rescaleWindows":${RescaleWindows.AsJSON~},
             "hotkeys":{
                 "toggleSwapOnActivate":${hotkeyToggleSwapOnActivate.AsJSON~},
                 "toggleFocusFollowsMouse":${hotkeyToggleFocusFollowsMouse.AsJSON~},
@@ -124,6 +148,7 @@ objectdef bwlSettings
                 "nextWindow":${hotkeyNextWindow.AsJSON~},
                 "previousWindow":${hotkeyPreviousWindow.AsJSON~}
             },
+            "useMonitors":${UseMonitors.AsJSON~}
             "useLayout":${UseLayout.AsJSON~},
             "customLayout":${CustomLayout.AsJSON~}
         }
@@ -137,6 +162,9 @@ objectdef bwlSettings
     variable bool FocusFollowsMouse=FALSE    
     variable bool AvoidTaskbar=FALSE
     variable string UseLayout="Horizontal"
+    variable bool RescaleWindows=TRUE
+
+    variable jsonvalue UseMonitors="[1,2,3,4,5,6,7,8]"
 
     variable jsonvalue CustomLayout="$$>
     {
@@ -182,6 +210,8 @@ objectdef bwlSettings
     <$$"
 }
 
+variable(global) weakref BWLSettings
+
 ; base class for window layouts
 objectdef bwlLayout
 {    
@@ -218,7 +248,7 @@ objectdef bwlHorizontalLayout
         variable uint smallHeight
         variable uint smallWidth
 
-        if ${BWLSession.Settings.AvoidTaskbar}
+        if ${BWLSettings.AvoidTaskbar}
         {
             monitorX:Set["${Display.Monitor.MaximizeLeft}"]
             monitorY:Set["${Display.Monitor.MaximizeTop}"]
@@ -235,7 +265,7 @@ objectdef bwlHorizontalLayout
             return
         }
 
-        if !${BWLSession.Settings.LeaveHole}
+        if !${BWLSettings.LeaveHole}
             numSmallRegions:Dec
 
         ; 2 windows is actually a 50/50 split screen and should probably handle differently..., pretend there's 3
@@ -264,12 +294,12 @@ objectdef bwlHorizontalLayout
             slotID:Set["${Slots[${numSlot}].Get[id]~}"]
             if ${slotID}!=${JMB.Slot}
             {
-                relay jmb${slotID} "WindowCharacteristics -stealth -pos -viewable ${useX},${mainHeight} -size -viewable ${smallWidth}x${smallHeight} -frame none"
+                relay jmb${slotID} "WindowCharacteristics ${BWLSettings.StealthFlag}-pos -viewable ${useX},${mainHeight} -size -viewable ${smallWidth}x${smallHeight} -frame none"
                 useX:Inc["${smallWidth}"]
             }
             else
             {
-                if ${BWLSession.Settings.LeaveHole}
+                if ${BWLSettings.LeaveHole}
                     useX:Inc["${smallWidth}"]
             }
             
@@ -300,7 +330,7 @@ objectdef bwlVerticalLayout
         variable uint smallHeight
         variable uint smallWidth
 
-        if ${BWLSession.Settings.AvoidTaskbar}
+        if ${BWLSettings.AvoidTaskbar}
         {
             monitorX:Set["${Display.Monitor.MaximizeLeft}"]
             monitorY:Set["${Display.Monitor.MaximizeTop}"]
@@ -317,7 +347,7 @@ objectdef bwlVerticalLayout
             return
         }
 
-        if !${BWLSession.Settings.LeaveHole}
+        if !${BWLSettings.LeaveHole}
             numSmallRegions:Dec
 
         ; 2 windows is actually a 50/50 split screen and should probably handle differently..., pretend there's 3
@@ -346,12 +376,12 @@ objectdef bwlVerticalLayout
             slotID:Set["${Slots[${numSlot}].Get[id]~}"]
             if ${slotID}!=${JMB.Slot}
             {
-                relay jmb${slotID} "WindowCharacteristics -stealth -pos -viewable ${mainWidth},${useY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
+                relay jmb${slotID} "WindowCharacteristics ${BWLSettings.StealthFlag}-pos -viewable ${mainWidth},${useY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
                 useY:Inc["${smallHeight}"]
             }
             else
             {
-                if ${BWLSession.Settings.LeaveHole}
+                if ${BWLSettings.LeaveHole}
                     useY:Inc["${smallHeight}"]
             }
             
@@ -372,16 +402,16 @@ objectdef bwlCustomWindowLayout
 
         variable uint numSmallRegions=${Slots.Used}
 
-        variable uint mainHeight=${BWLSession.Settings.CustomLayout.Get[mainRegion,height]}
-        variable uint mainWidth=${BWLSession.Settings.CustomLayout.Get[mainRegion,width]}
-        variable int mainX=${BWLSession.Settings.CustomLayout.Get[mainRegion,x]}
-        variable int mainY=${BWLSession.Settings.CustomLayout.Get[mainRegion,y]}
+        variable uint mainHeight=${BWLSettings.CustomLayout.Get[mainRegion,height]}
+        variable uint mainWidth=${BWLSettings.CustomLayout.Get[mainRegion,width]}
+        variable int mainX=${BWLSettings.CustomLayout.Get[mainRegion,x]}
+        variable int mainY=${BWLSettings.CustomLayout.Get[mainRegion,y]}
 
 
         WindowCharacteristics -pos -viewable ${mainX},${mainY} -size -viewable ${mainWidth}x${mainHeight} -frame none
         BWLSession.Applied:Set[1]
 
-        if !${BWLSession.Settings.LeaveHole}
+        if !${BWLSettings.LeaveHole}
             numSmallRegions:Dec
 
         if !${setOtherSlots} || !${numSmallRegions}
@@ -402,24 +432,24 @@ objectdef bwlCustomWindowLayout
             slotID:Set["${Slots[${numSlot}].Get[id]~}"]
             if ${slotID}!=${JMB.Slot}
             {
-                smallX:Set["${BWLSession.Settings.CustomLayout.Get[regions,${numSmallRegion},x]~}"]
-                smallY:Set["${BWLSession.Settings.CustomLayout.Get[regions,${numSmallRegion},y]~}"]
-                smallWidth:Set["${BWLSession.Settings.CustomLayout.Get[regions,${numSmallRegion},width]~}"]
-                smallHeight:Set["${BWLSession.Settings.CustomLayout.Get[regions,${numSmallRegion},height]~}"]
+                smallX:Set["${BWLSettings.CustomLayout.Get[regions,${numSmallRegion},x]~}"]
+                smallY:Set["${BWLSettings.CustomLayout.Get[regions,${numSmallRegion},y]~}"]
+                smallWidth:Set["${BWLSettings.CustomLayout.Get[regions,${numSmallRegion},width]~}"]
+                smallHeight:Set["${BWLSettings.CustomLayout.Get[regions,${numSmallRegion},height]~}"]
 
                 if ${smallWidth} && ${smallHeight}
                 {
                     if ${smallWidth}==${mainWidth} && ${smallHeight}==${mainHeight}
                         relay jmb${slotID} "WindowCharacteristics -pos -viewable ${smallX},${smallY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
                     else
-                        relay jmb${slotID} "WindowCharacteristics -stealth -pos -viewable ${smallX},${smallY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
+                        relay jmb${slotID} "WindowCharacteristics ${BWLSettings.StealthFlag}-pos -viewable ${smallX},${smallY} -size -viewable ${smallWidth}x${smallHeight} -frame none"
                 }
 
                 numSmallRegion:Inc
             }
             else
             {
-                if ${BWLSession.Settings.LeaveHole}
+                if ${BWLSettings.LeaveHole}
                    numSmallRegion:Inc
             }
             
