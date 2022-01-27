@@ -269,7 +269,7 @@ objectdef bwlHorizontalLayout
             numSmallRegions:Dec
 
         ; 2 windows is actually a 50/50 split screen and should probably handle differently..., pretend there's 3
-        if ${numSmallRegions}==2
+        if ${numSmallRegions}<3
             numSmallRegions:Set[3]
 
         mainWidth:Set["${monitorWidth}"]
@@ -351,7 +351,7 @@ objectdef bwlVerticalLayout
             numSmallRegions:Dec
 
         ; 2 windows is actually a 50/50 split screen and should probably handle differently..., pretend there's 3
-        if ${numSmallRegions}==2
+        if ${numSmallRegions}<3
             numSmallRegions:Set[3]
 
         mainHeight:Set["${monitorHeight}"]
