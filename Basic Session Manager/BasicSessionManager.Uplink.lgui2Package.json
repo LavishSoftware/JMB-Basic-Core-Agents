@@ -1,0 +1,481 @@
+{
+    "$schema": "http://www.lavishsoft.com/schema/lgui2Package.json",
+    "templates": {
+        "bsm.quickbarButton":{
+            "jsonTemplate":"jmb.quickbarButton",
+            "type":"button",
+            "content":"Sessions",
+            "name":"bsm.quickbarButton",
+            "eventHandlers":{
+                "onRelease": {
+                    "type": "code",
+                    "code":"LGUI2.Element[bsm.MainWindow]:SetVisibility[Visible]:BubbleToTop"
+                }
+            }
+        },
+        "bsm.slotView": {
+            "jsonTemplate": "listboxitem",
+            "content": {
+                "padding": 3,
+                "type": "stackpanel",
+                "orientation":"vertical",
+                "uniform":true,
+                "horizontalAlignment":"left",
+                "borderThickness":[0,0,0,1],
+                "borderBrush":{
+                    "color":[1.0,1.0,1.0]
+                },
+                "children":[      
+                    {
+                        "type":"dockpanel",
+                        "children":[
+                            {
+                                "type":"stackpanel",
+                                "_dock":"left",
+                                "orientation":"horizontal",
+                                "font":{
+                                    "heightFactor":1.2,
+                                    "bold":true
+                                },
+                                "children":[
+                                    {
+                                        "type":"textblock",
+                                        "text":"Slot "
+                                    },
+                                    {
+                                        "type":"textblock",
+                                        "textBinding": {
+                                            "pullFormat": "${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[id]}",
+                                            "pullReplaceNull": ""
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "type":"stackpanel",
+                                "_dock":"right",
+                                "orientation":"horizontal",
+                                "font":{
+                                    "heightFactor":1.2,
+                                    "bold":true
+                                },
+                                "children":[
+                                    {
+                                        "type":"textblock",
+                                        "text":"Character: "
+                                    },
+                                    {
+                                        "type":"textblock",
+                                        "textBinding": {
+                                            "pullFormat": "${JMB.Character[${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[character]}].DisplayName}",
+                                            "pullReplaceNull": ""
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type":"stackpanel",
+                        "orientation":"horizontal",
+                        "color":[0.75,0.75,0.75],
+                        "children":[
+                            {
+                                "type":"textblock",
+                                "text":"PID "
+                            },
+                            {
+                                "type":"textblock",
+                                "textBinding": {
+                                    "pullFormat": "${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[processId]}",
+                                    "pullReplaceNull": ""
+                                }
+                            },
+                            {
+                                "type":"textblock",
+                                "text":": "
+                            },
+                            {
+                                "type":"textblock",
+                                "textBinding": {
+                                    "pullFormat": "${JMBUplink.Session[-pid,${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[processId]}].Executable}",
+                                    "pullReplaceNull": ""
+                                }
+                            }
+                        ]
+                    }                    
+                ]
+            }
+        },
+        "bsm.sessionView": {
+            "jsonTemplate": "listboxitem",
+            "content": {
+                "padding": 3,
+                "type": "stackpanel",
+                "orientation":"vertical",
+                "uniform":true,
+                "horizontalAlignment":"left",
+                "borderThickness":[0,0,0,1],
+                "borderBrush":{
+                    "color":[1.0,1.0,1.0]
+                },
+                "children":[      
+                    {
+                        "type":"dockpanel",
+                        "children":[
+                            {
+                                "type":"textblock",
+                                "_dock":"left",
+                                "font":{
+                                    "heightFactor":1.2,
+                                    "bold":true
+                                },
+                                "textBinding": {
+                                    "pullFormat": "${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[name]}",
+                                    "pullReplaceNull": ""
+                                }
+                            },
+                            {
+                                "type":"stackpanel",
+                                "_dock":"right",
+                                "orientation":"horizontal",
+                                "verticalAlignment":"bottom",
+                                "color":[0.75,0.75,0.75],
+                                "children":[
+                                    {
+                                        "type":"textblock",
+                                        "text":"Slot "
+                                    },
+                                    {
+                                        "type":"textblock",
+                                        "textBinding": {
+                                            "pullFormat": "${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[slot]}",
+                                            "pullReplaceNull": ""
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },                              
+                    {
+                        "type":"stackpanel",
+                        "_dock":"top",
+                        "orientation":"horizontal",
+                        "color":[0.75,0.75,0.75],
+                        "children":[
+                            {
+                                "type":"textblock",
+                                "text":"PID "
+                            },
+                            {
+                                "type":"textblock",
+                                "textBinding": {
+                                    "pullFormat": "${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[processId]}",
+                                    "pullReplaceNull": ""
+                                }
+                            },
+                            {
+                                "type":"textblock",
+                                "text":": "
+                            },
+                            {
+                                "type":"textblock",
+                                "textBinding": {
+                                    "pullFormat": "${LGUI2.DataBindingContext.Locate[\"\",itemview,ancestor].Item.Data.Get[executable]}",
+                                    "pullReplaceNull": ""
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "elements": [
+        {
+            "type": "panel",
+            "visibility": "hidden",
+            "name": "bsm.events"
+        },
+        {
+            "type": "window",
+            "name": "bsm.MainWindow",
+            "title": "Basic Session Manager",
+            "width": 600,
+            "height": 400,
+            "visibility": "hidden",
+            "content": {
+                "type": "dockpanel",
+                "children": [
+                    {
+                        "type": "tabcontrol",
+                        "horizontalAlignment": "stretch",
+                        "verticalAlignment": "stretch",
+                        "headerEdge": "top",
+                        "tabs": [
+                            {
+                                "type": "tab",
+                                "header":"Sessions",
+                                "content": {
+                                    "type": "dockpanel",
+                                    "_dock": "top",
+                                    "padding": 2,                                    
+                                    "horizontalAlignment": "stretch",
+                                    "children": [
+                                        {
+                                            "type": "listbox",
+                                            "_dock": "top",
+                                            "horizontalAlignment":"stretch",
+                                            "heightFactor":0.8,
+                                            "name": "bsm.UseSlot",
+                                            "itemsBinding": {
+                                                "pullFormat": "${BasicSessionManager.JMBSessions.AsJSON}",
+                                                "pullHook": {
+                                                    "elementName": "bsm.events",
+                                                    "flags": "global",
+                                                    "event": "onSessionsUpdated"
+                                                }
+                                            },
+                                            "selectedItemBinding": {
+                                                "pullFormat": "${BasicSessionManager.UseSession}",
+                                                "pushFormat": [
+                                                    "BasicSessionManager:SetSession[\"",
+                                                    "\"]"
+                                                ]
+                                            },
+                                            "selectedItemBindingProperty": "name",
+                                            "itemViewGenerators": {
+                                                "default": {
+                                                    "type": "method",
+                                                    "object": "BasicSessionManager",
+                                                    "method": "GenerateItemView_Session"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "button",
+                                            "_dock": "right",
+                                            "margin":[0,3,0,0],
+                                            "content": "Kill Session",
+                                            "font": {
+                                                "heightFactor": 1.2,
+                                                "bold": true
+                                            },
+                                            "eventHandlers": {
+                                                "onPress": {
+                                                    "type": "method",
+                                                    "object": "BasicSessionManager",
+                                                    "method": "OnTerminateSession"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "type": "tab",
+                                "header":"Slots",
+                                "content": {
+                                    "type": "dockpanel",
+                                    "_dock": "top",
+                                    "padding": 2,                                    
+                                    "horizontalAlignment": "stretch",
+                                    "children": [
+                                        {
+                                            "type": "listbox",
+                                            "_dock": "top",
+                                            "horizontalAlignment":"stretch",
+                                            "heightFactor":0.8,
+                                            "name": "bsm.UseSlot",
+                                            "itemsBinding": {
+                                                "pullFormat": "${BasicSessionManager.JMBSlots.AsJSON}",
+                                                "pullHook": {
+                                                    "elementName": "bsm.events",
+                                                    "flags": "global",
+                                                    "event": "onSlotsUpdated"
+                                                }
+                                            },
+                                            "selectedItemBinding": {
+                                                "pullFormat": "${BasicSessionManager.UseSlot}",
+                                                "pushFormat": [
+                                                    "BasicSessionManager:SetSlot[\"",
+                                                    "\"]"
+                                                ]
+                                            },
+                                            "selectedItemBindingProperty": "id",
+                                            "itemViewGenerators": {
+                                                "default": {
+                                                    "type": "method",
+                                                    "object": "BasicSessionManager",
+                                                    "method": "GenerateItemView_Slot"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type":"dockpanel",
+                                            "_dock":"top",
+                                            "horizontalAlignment":"stretch",
+                                            "children":[
+                                                {
+                                                    "type": "button",
+                                                    "_dock": "right",
+                                                    "margin":[3,3,0,0],
+                                                    "content": "Kill",
+                                                    "font": {
+                                                        "heightFactor": 1.2,
+                                                        "bold": true
+                                                    },
+                                                    "eventHandlers": {
+                                                        "onPress": {
+                                                            "type": "method",
+                                                            "object": "BasicSessionManager",
+                                                            "method": "OnTerminateSlot"
+                                                        }
+                                                    }
+                                                },                                        
+                                                {
+                                                    "type": "button",
+                                                    "_dock": "right",
+                                                    "margin":[3,3,0,0],
+                                                    "content": "Request Close",
+                                                    "font": {
+                                                        "heightFactor": 1.2,
+                                                        "bold": true
+                                                    },
+                                                    "eventHandlers": {
+                                                        "onPress": {
+                                                            "type": "method",
+                                                            "object": "BasicSessionManager",
+                                                            "method": "OnCloseSlot"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "type": "button",
+                                                    "_dock": "right",
+                                                    "margin":[3,3,0,0],
+                                                    "content": "Remove (leave running)",
+                                                    "font": {
+                                                        "heightFactor": 1.2,
+                                                        "bold": true
+                                                    },
+                                                    "eventHandlers": {
+                                                        "onPress": {
+                                                            "type": "method",
+                                                            "object": "BasicSessionManager",
+                                                            "method": "OnRemoveSlot"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "type": "button",
+                                                    "_dock": "right",
+                                                    "margin":[3,3,0,0],
+                                                    "content": "Re-launch",
+                                                    "font": {
+                                                        "heightFactor": 1.2,
+                                                        "bold": true
+                                                    },
+                                                    "eventHandlers": {
+                                                        "onPress": {
+                                                            "type": "method",
+                                                            "object": "BasicSessionManager",
+                                                            "method": "OnRelaunchSlot"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },                                                  
+                                        {
+                                            "type": "dockpanel",
+                                            "_dock": "top",
+                                            "padding": 2,
+                                            "margin":[0,3,0,0],                                    
+                                            "horizontalAlignment": "stretch",
+                                            "children":[
+                                                {
+                                                    "type":"button",
+                                                    "_dock":"right",
+                                                    "margin":[3,3,0,0],
+                                                    "content":"Reset Slots",
+                                                    "font": {
+                                                        "heightFactor": 1.2,
+                                                        "bold": true
+                                                    },
+                                                    "eventHandlers": {
+                                                        "onPress": {
+                                                            "type": "method",
+                                                            "object": "BasicSessionManager",
+                                                            "method": "OnResetSlots"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "type": "button",
+                                                    "_dock": "right",
+                                                    "margin":[3,3,0,0],
+                                                    "content": "Add Empty Slot",
+                                                    "font": {
+                                                        "heightFactor": 1.2,
+                                                        "bold": true
+                                                    },
+                                                    "eventHandlers": {
+                                                        "onPress": {
+                                                            "type": "method",
+                                                            "object": "BasicSessionManager",
+                                                            "method": "OnAddSlot"
+                                                        }
+                                                    }
+                                                }
+                                            ]                                            
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "dockpanel",
+                        "_dock": "top",
+                        "padding": 2,
+                        "horizontalAlignment": "stretch",
+                        "verticalAlignment": "stretch",
+                        "children": [
+                            {
+                                "type": "button",
+                                "_dock": "left",
+                                "content": "Terminate",
+                                "font": {
+                                    "heightFactor": 1.2,
+                                    "bold": true
+                                },
+                                "eventHandlers": {
+                                    "onPress": {
+                                        "type": "method",
+                                        "object": "BasicSessionManager",
+                                        "method": "OnTerminateButton"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "_dock": "right",
+                                "content": "Reload",
+                                "font": {
+                                    "heightFactor": 1.2,
+                                    "bold": true
+                                },
+                                "eventHandlers": {
+                                    "onPress": {
+                                        "type": "code",
+                                        "code": "JMB.Agent[Basic Session Manager]:Stop:Start"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

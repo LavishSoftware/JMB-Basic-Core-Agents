@@ -1,0 +1,20 @@
+{
+	"$schema": "http://www.lavishsoft.com/schema/agent.json",
+	"name": "Basic Session Manager",
+	"platforms": {
+		"joe multiboxer uplink": {
+			"eventHandlers": {
+				"onAgentStartup": {
+					"code": [
+						"run BasicSessionManager.Uplink.iss"
+					]
+				},
+				"onAgentShutdown": {
+					"code": [
+						"endscript BasicSessionManager.Uplink"
+					]
+				}
+			}
+		}
+	}
+}
