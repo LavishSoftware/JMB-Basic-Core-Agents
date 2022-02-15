@@ -17,7 +17,7 @@ objectdef bwshSession
         This:LoadSettings
         This:Enable
 
-        LGUI2.Element[consolewindow]:SetVisibility[Visible]
+;        LGUI2.Element[consolewindow]:SetVisibility[Visible]
     }
 
     method Shutdown()
